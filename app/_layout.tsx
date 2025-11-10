@@ -14,7 +14,13 @@ import {
   HankenGrotesk_400Regular,
   HankenGrotesk_400Regular_Italic,
   HankenGrotesk_700Bold,
-  HankenGrotesk_700Bold_Italic
+  HankenGrotesk_700Bold_Italic,
+  HankenGrotesk_500Medium,
+  HankenGrotesk_800ExtraBold,
+  HankenGrotesk_800ExtraBold_Italic,
+  HankenGrotesk_500Medium_Italic,
+  HankenGrotesk_900Black_Italic,
+  HankenGrotesk_900Black
 } from "@expo-google-fonts/hanken-grotesk";
 
 export const unstable_settings = {
@@ -26,8 +32,14 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     HankenGrotesk_400Regular,
     HankenGrotesk_400Regular_Italic,
+    HankenGrotesk_500Medium,
+    HankenGrotesk_500Medium_Italic,
     HankenGrotesk_700Bold,
     HankenGrotesk_700Bold_Italic,
+    HankenGrotesk_800ExtraBold,
+    HankenGrotesk_800ExtraBold_Italic,
+    HankenGrotesk_900Black_Italic,
+    HankenGrotesk_900Black,
   })
 
   if (!fontsLoaded) {

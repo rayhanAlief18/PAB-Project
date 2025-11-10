@@ -1,17 +1,17 @@
-import { Image } from 'expo-image';
-import { View, Text} from 'react-native';
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 import { Header } from '@/components/custom';
+import CardMain from '@/components/custom/Card/CardMain';
+import PieChartDashboard from '@/components/custom/Chart/PieChartDashboard';
+import TaskSummary from '@/components/custom/ToDo/TaskSummary';
+import { Divider } from '@/components/ui/divider';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Header name='Rayhan Alief Febryan'/>     
+    <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
+      <Header name='Rayhan Alief Febryan'customClass='px-[30px]'/>
+      <CardMain customClass='px-[30px]'/>
+      <PieChartDashboard customClass='my-[30px] px-[30px]'/>
+      <TaskSummary customClass='px-[30px]'/>
     </SafeAreaView>
   );
 }
