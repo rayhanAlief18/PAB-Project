@@ -1,4 +1,3 @@
-import { Button, ButtonText } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -43,7 +42,7 @@ export default function Index() {
 
   return (
     <ScrollView
-      style={{ flex: 1 }}
+      className="flex-1 bg-white"
       showsVerticalScrollIndicator={false}
       contentContainerStyle={{
         paddingVertical: 20,
@@ -51,154 +50,109 @@ export default function Index() {
         paddingBottom: 40,
       }}
     >
-      {/* SALDO CARD */}
-      <View
-        style={{
-          backgroundColor: "#000",
-          padding: 20,
-          borderRadius: 20,
-          width: "100%",
-          marginTop: 10,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16 }}>Total Saldo</Text>
-
+{/* SALDO CARD diberi relative untuk button absolute */}
+      <View className="bg-black p-5 rounded-2xl w-full mt-2.5 relative">
+        <View className="flex-row justify-between items-center">
+          <Text className="text-white text-base">Total Saldo</Text>
           <TouchableOpacity onPress={() => setShowBalance(!showBalance)}>
-            <Text style={{ color: "white", fontSize: 18 }}>
+            <Text className="text-white text-xl">
               {showBalance ? "👁️" : "👁️‍🗨️"}
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={{ marginTop: 12 }}>
-          <Heading size="3xl" style={{ color: "white" }}>
+        <View className="mt-3">
+          <Heading size="3xl" className="text-white font-bold">
             {showBalance ? `Rp${getBalances()}` : "●●●●●●●●●"}
           </Heading>
         </View>
+
+        {/* KONTENER UNTUK MEMBUAT TOMBOL KE TENGAH
+          - 'absolute' 'bottom-5' : Posisi di bawah.
+          - 'left-0' 'right-0' : Membentang selebar parent.
+          - 'items-center'     : Membuat anak (tombol) jadi ke tengah.
+        */}
+        <View className="absolute bottom-0 left-5 right-0 items-center">
+          
+          {/* BUTTON TAMBAH (+)
+            - Class 'absolute', 'left-5', 'right-5', 'bottom-5' dihapus 
+              karena posisinya sudah diatur oleh View di atas.
+          */}
+          <TouchableOpacity
+            onPress={() => router.push("/create")}
+            className="bg-white rounded-full w-6 h-10 items-center justify-center shadow-lg"
+          >
+            <Text className="text-black text-4xl font-bold pb-1">+</Text>
+          </TouchableOpacity>
+
+        </View>
+        
+        
       </View>
 
-      {/* TOMBOL TAMBAH */}
-      <Button
-        variant="outline"
-        style={{ marginTop: 30 }}
-        onPress={() => router.push("/create")}
-      >
-        <ButtonText>Tambah</ButtonText>
-      </Button>
+      {/* TITLE */}
+      <Text className="text-2xl font-bold mt-8 mb-4 text-gray-300 text-center">
+        Transaksi
+      </Text>
 
       {/* LIST CARD */}
-      <View style={{ marginTop: 30 }}>
-        <Text style={{ fontSize: 18, fontWeight: "700" }}>Transaksi</Text>
-
+      <View className="w-full">
         {cashflows.map((cashflow, index) => (
           <View
             key={index}
-            style={{
-              backgroundColor: "#000",
-              paddingVertical: 14,
-              paddingHorizontal: 16,
-              borderRadius: 16,
-              marginTop: 14,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
+            className={`bg-black p-5 rounded-2xl w-full ${
+              index !== 0 ? "mt-6" : ""
+            }`}
           >
-            {/* LEFT AREA (TITLE + DATE) */}
-            <View style={{ flex: 1 }}>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 14,
-                  fontWeight: "600",
-                }}
-              >
-                {cashflow.title || "Transaksi"}
-              </Text>
-
-              <Text
-                style={{
-                  color: "#8f8f8f",
-                  fontSize: 11,
-                  marginTop: 2,
-                }}
-              >
-                {cashflow.type === "in" ? "Pemasukan" : "Pengeluaran"}
-                {" · "}
-                {formatDate(cashflow.date)}
-              </Text>
-            </View>
-
-            {/* RIGHT AREA (NOMINAL + BUTTONS) */}
-            <View style={{ alignItems: "flex-end" }}>
-              <Text
-                style={{
-                  color: cashflow.type === "in" ? "lightgreen" : "red",
-                  fontSize: 15,
-                  fontWeight: "700",
-                }}
-              >
-                {cashflow.type === "in" ? "+" : "-"} Rp
-                {cashflow.nominal.toLocaleString("id-ID")}
-              </Text>
-
-              {/* Buttons compact */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 6,
-                  marginTop: 6,
-                }}
-              >
-                {/* VIEW */}
-                <TouchableOpacity
-                  onPress={() => router.push(`/detail/${index}`)}
-                  style={{
-                    backgroundColor: "white",
-                    paddingVertical: 4,
-                    paddingHorizontal: 10,
-                    borderRadius: 8,
-                  }}
+            <View className="flex-row justify-between items-center">
+              {/* LEFT AREA */}
+              <View className="flex-1">
+                <Text className="text-white text-base font-bold">
+                  {cashflow.title || "Transaksi"}
+                </Text>
+                <Text className="text-gray-300 text-xs mt-2">
+                  {cashflow.type === "in" ? "Pemasukan" : "Pengeluaran"}
+                  {" · "}
+                  {formatDate(cashflow.date)}
+                </Text>
+              </View>
+              {/* RIGHT AREA */}
+              <View className="items-end ml-4">
+                <Text
+                  className={`font-bold text-base mb-3 ${
+                    cashflow.type === "in" ? "text-green-400" : "text-red-500"
+                  }`}
                 >
-                  <Text
-                    style={{ fontWeight: "500", color: "black", fontSize: 12 }}
+                  {cashflow.type === "in" ? "+ " : "- "}Rp
+                  {cashflow.nominal.toLocaleString("id-ID")}
+                </Text>
+                <View className="flex-row space-x-3">
+                  <TouchableOpacity
+                    onPress={() => router.push(`/detail/${index}`)}
+                    className="bg-white py-1 px-4 rounded"
                   >
-                    Detail
-                  </Text>
-                </TouchableOpacity>
-
-                {/* DELETE */}
-                <TouchableOpacity
-                  onPress={() => {
-                    setCashflows((prev) => {
-                      const updated = prev.filter((c, i) => i !== index);
-                      AsyncStorage.setItem(
-                        "cashflows",
-                        JSON.stringify(updated)
-                      );
-                      return updated;
-                    });
-                  }}
-                  style={{
-                    backgroundColor: "white",
-                    paddingVertical: 4,
-                    paddingHorizontal: 10,
-                    borderRadius: 8,
-                  }}
-                >
-                  <Text
-                    style={{ fontWeight: "500", color: "black", fontSize: 12 }}
+                    <Text className="text-black text-xs font-semibold">
+                      Detail
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setCashflows((prev) => {
+                        const updated = prev.filter((c, i) => i !== index);
+                        AsyncStorage.setItem(
+                          "cashflows",
+                          JSON.stringify(updated)
+                        );
+                        return updated;
+                      });
+                    }}
+                    className="bg-white py-1 px-4 rounded"
                   >
-                    Hapus
-                  </Text>
-                </TouchableOpacity>
+                    <Text className="text-black text-xs font-semibold">
+                      Hapus
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>

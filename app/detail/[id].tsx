@@ -1,12 +1,11 @@
-import { Button, ButtonText } from "@/components/ui/button";
-import { Center } from "@/components/ui/center";
-import { Heading } from "@/components/ui/heading";
 import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Textarea, TextareaInput } from "@/components/ui/textarea";
 import { VStack } from "@/components/ui/vstack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams } from "expo-router";
+import { Center } from "@/components/ui/center";
+import { Heading } from "@/components/ui/heading";
+import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
 
@@ -25,75 +24,85 @@ export default function DetailCashflow() {
     };
 
     return (
-        <View style={{ paddingVertical: 20, paddingHorizontal: 20 }}>
+        <View className="px-5 py-5">
+
             {/* TITLE */}
-            {/* <Center>
-                <Heading size="2xl" style={{ marginBottom: 20 }}>
+            <Center className="mb-4 mt-4">
+                <Heading size="2xl" className="text-black">
                     Detail Cashflow
                 </Heading>
-            </Center> */}
+            </Center>
 
-            {/* CARD VIEW */}
-            <View
-                style={{
-                    backgroundColor: "white",
-                    padding: 20,
-                    borderRadius: 16,
-                    shadowColor: "#000",
-                    shadowOpacity: 0.1,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowRadius: 6,
-                    elevation: 4,
-                }}
-            >
+            {/* CARD */}
+            <View className="bg-white p-5 rounded-2xl border border-gray-200 mt-2">
                 <VStack space="md">
+
                     {/* NOMINAL */}
                     <VStack space="xs">
-                        <Text style={{ color: "#444" }}>Nominal</Text>
-                        <Input isReadOnly>
+                        <Text className="text-black">Nominal</Text>
+                        <Input
+                            isReadOnly
+                            className="bg-white border border-gray-300 rounded-lg"
+                        >
                             <InputField
-                                placeholder="Nominal"
+                                className="text-black"
                                 value={
-                                    "Rp" +
-                                    cashflow?.nominal.toLocaleString("id-ID")
+                                    cashflow
+                                        ? "Rp" + cashflow.nominal.toLocaleString("id-ID")
+                                        : ""
                                 }
+                                readOnly
                             />
                         </Input>
                     </VStack>
 
                     {/* TYPE */}
                     <VStack space="xs">
-                        <Text style={{ color: "#444" }}>Tipe</Text>
-                        <Input isReadOnly>
-                            <InputField value={cashflow?.type} />
+                        <Text className="text-black">Tipe</Text>
+                        <Input
+                            isReadOnly
+                            className="bg-white border border-gray-300 rounded-lg"
+                        >
+                            <InputField
+                                className="text-black"
+                                value={cashflow?.type ?? ""}
+                                readOnly
+                            />
                         </Input>
                     </VStack>
 
                     {/* DATE */}
                     <VStack space="xs">
-                        <Text style={{ color: "#444" }}>Tanggal</Text>
-                        <Input isReadOnly>
-                            <InputField value={cashflow?.date} />
+                        <Text className="text-black">Tanggal</Text>
+                        <Input
+                            isReadOnly
+                            className="bg-white border border-gray-300 rounded-lg"
+                        >
+                            <InputField
+                                className="text-black"
+                                value={cashflow?.date ?? ""}
+                                readOnly
+                            />
                         </Input>
                     </VStack>
 
                     {/* NOTE */}
                     <VStack space="xs">
-                        <Text style={{ color: "#444" }}>Catatan</Text>
-                        <Textarea isReadOnly>
-                            <TextareaInput value={cashflow?.note} />
+                        <Text className="text-black">Catatan</Text>
+                        <Textarea
+                            isReadOnly
+                            className="bg-white border border-gray-300 rounded-lg"
+                        >
+                            <TextareaInput
+                                style={{ color: "#000" }} // HARUS
+                                value={cashflow?.note ?? ""}
+                                readOnly
+                            />
                         </Textarea>
                     </VStack>
+
                 </VStack>
             </View>
-
-            {/* BUTTON BACK */}
-            {/* <Button
-                style={{ marginTop: 30 }}
-                onPress={() => router.back()}
-            >
-                <ButtonText>Kembali</ButtonText>
-            </Button> */}
         </View>
     );
 }
