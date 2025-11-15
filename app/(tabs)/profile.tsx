@@ -59,10 +59,10 @@ export default function ProfileScreen() {
                 </Box>
                 <VStack space="xs" flex={1}>
                   <Text color="$white" size="lg" fontWeight="$bold">
-                    John Doe
+                    Refangga Lintar Prayoga
                   </Text>
                   <Text color="$gray400" size="sm">
-                    john.doe@email.com
+                    refanggalintar@gmail.com
                   </Text>
                 </VStack>
               </HStack>
