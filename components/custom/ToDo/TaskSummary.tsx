@@ -15,11 +15,11 @@ export default function TaskSummary({customClass}:customClassType) {
             <HStack className='justify-between'>
                 <Box className='border-2 py-[9px] px-[15px] rounded-[8px] w-[48%] bg-white'>
                     <HStack className='justify-between items-center'>
-                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Not Complete</Text>
+                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Complete</Text>
                         <CircleArrowRight />
                     </HStack>
                     <HStack className='items-center mt-[3px] '>
-                        <Text className='text-[30px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>12</Text>
+                        <Text className='text-[30px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>2</Text>
                         <Text className='text-[]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}> Task Activity</Text>
                     </HStack>
                 </Box>
@@ -35,6 +35,16 @@ export default function TaskSummary({customClass}:customClassType) {
                     </HStack>
                 </Box>
             </HStack>
+            <Box className='border-2 py-[9px] px-[15px] rounded-[8px] mt-3 bg-white'>
+                    <HStack className='justify-between items-center'>
+                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Goup Task</Text>
+                        <CircleArrowRight />
+                    </HStack>
+                    <HStack className='items-center mt-[3px]'>
+                        <Text className='text-[30px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>4</Text>
+                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}> Group Task Activity</Text>
+                    </HStack>
+                </Box>
         </View>
     )
 }

@@ -16,31 +16,31 @@ export default function PieChartDashboard({ customClass }: customClassType) {
         {
             value: 250000,
             text: 'Kategori 1',
-            color: '#000000', // Hitam Penuh (Sesuai dengan slice terbesar di gambar)
+            color: '#000000',
             textColor: '#FFFFFF'
         },
         {
             value: 150000,
             text: 'Kategori 2',
-            color: '#363636', // Abu-abu Gelap
+            color: '#363636',
             textColor: '#FFFFFF'
         },
         {
             value: 100000,
             text: 'Kategori 3',
-            color: '#707070', // Abu-abu Sedang
+            color: '#707070',
             textColor: '#FFFFFF'
         },
         {
             value: 80000,
             text: 'Kategori 4',
-            color: '#A9A9A9', // Abu-abu Terang
+            color: '#A9A9A9',
             textColor: '#000000'
         },
         {
             value: 50000,
             text: 'Kategori 5',
-            color: '#D3D3D3', // Hampir Putih
+            color: '#D3D3D3',
             textColor: '#000000'
         },
     ];
@@ -75,27 +75,27 @@ export default function PieChartDashboard({ customClass }: customClassType) {
                                     <Text className='text-[#4B4B4B] text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium", }}>Makan Minum</Text>
                                     <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Rp 125.000</Text>
                                 </VStack>
-                                <CirclePlus size={24} />
+                                <CirclePlus size={24} color={'#4b4b4b'} />
                             </HStack>
                             <Divider className='mt-[4px] h-[2px] rounded-full bg-black pr-8' />
                         </View>
                         <View className='mt-[14px]'>
                             <HStack className='justify-between items-center'>
                                 <VStack className=''>
-                                    <Text className='text-[#4B4B4B] text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Makan Minum</Text>
-                                    <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Rp 125.000</Text>
+                                    <Text className='text-[#4B4B4B] text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Bensin</Text>
+                                    <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Rp 100.000</Text>
                                 </VStack>
-                                <CirclePlus size={24} />
+                                <CirclePlus size={24} color={'#4b4b4b'} />
                             </HStack>
                             <Divider className='mt-[4px] h-[2px] rounded-full bg-black pr-8' />
                         </View>
                         <View className='mt-[14px]'>
                             <HStack className='justify-between items-center'>
                                 <VStack className=''>
-                                    <Text className='text-[#4B4B4B] text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Makan Minum</Text>
-                                    <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Rp 125.000</Text>
+                                    <Text className='text-[#4B4B4B] text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Nongkrong</Text>
+                                    <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Rp 25.000</Text>
                                 </VStack>
-                                <CirclePlus size={24} />
+                                <CirclePlus size={24} color={'#4b4b4b'} />
                             </HStack>
                             <Divider className='mt-[4px] h-[2px] rounded-full bg-black pr-8' />
                         </View>

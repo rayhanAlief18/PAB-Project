@@ -6,23 +6,24 @@ import {
 } from '@/components/ui/avatar';
 import { Box } from '@/components/ui/box';
 import React from 'react';
-import { Text } from 'react-native';
+import { Pressable, Text } from 'react-native';
 import { HStack } from '../ui/hstack';
 import { VStack } from '../ui/vstack';
 
 //icon
-import { Settings } from "lucide-react-native";
+import { router } from 'expo-router';
+import { UserRoundCog } from "lucide-react-native";
 
-interface HeaderProps{
-    name:string,
-    customClass?:string,
+interface HeaderProps {
+    name: string,
+    customClass?: string,
 }
-export default function Header({name, customClass}:HeaderProps) {
-    const sambutan = ()=>{
+export default function HeaderDashboard({ name, customClass }: HeaderProps) {
+    const sambutan = () => {
         const jam = new Date().getHours();
         if (jam >= 5 && jam < 11) return 'Good Morning';
-        if (jam >= 11 && jam < 15) return 'Good Afternoon';
-        if (jam >= 15) return 'Good Evening';
+        if (jam >= 11 && jam < 15) return 'Good Evening';
+        if (jam >= 15 && jam < 20) return 'Good Afternoon';
         return 'Good Night';
     }
     return (
@@ -40,14 +41,16 @@ export default function Header({name, customClass}:HeaderProps) {
                             <AvatarBadge />
                         </Avatar>
                         <VStack>
-                            <Text className='text-[12px]' style={{ fontFamily: "HankenGrotesk_400Regular"}}>{sambutan()}</Text>
-                            <Text className='text-[18px] tracking-[-1.1px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic"}}>
+                            <Text className='text-[12px]' style={{ fontFamily: "HankenGrotesk_400Regular" }}>{sambutan()}</Text>
+                            <Text className='text-[18px] tracking-[-1.1px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>
                                 {name}
                             </Text>
 
                         </VStack>
                     </HStack>
-                    <Settings color='#4b4b4b' size={24} />
+                    <Pressable onPress={()=>router.push("/UpdateProfile")}>
+                        <UserRoundCog color='#4b4b4b' size={24} />
+                    </Pressable>
                 </HStack>
             </Box>
         </>

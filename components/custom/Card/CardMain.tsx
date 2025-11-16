@@ -21,7 +21,7 @@ export default function CardMain({customClass}:customClassType) {
                 <Box className="bg-white p-5 border-[2px] rounded-[8px] py-[18px] px-[24px]">
                     <VStack>
                         <HStack className='items-center gap-2 '>
-                            <Wallet />
+                            <Wallet color={'#4b4b4b'} />
                             <Text style={{fontFamily:"HankenGrotesk_500Medium"}} className='text-[15px]'>Your All Money</Text>
                         </HStack>
                         <Text style={{fontFamily:"HankenGrotesk_800ExtraBold_Italic"}} className='text-[36px] mt-3'>Rp 8.000.000</Text>

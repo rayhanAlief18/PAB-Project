@@ -20,7 +20,8 @@ import {
   HankenGrotesk_800ExtraBold_Italic,
   HankenGrotesk_500Medium_Italic,
   HankenGrotesk_900Black_Italic,
-  HankenGrotesk_900Black
+  HankenGrotesk_900Black,
+  HankenGrotesk_300Light
 } from "@expo-google-fonts/hanken-grotesk";
 
 export const unstable_settings = {
@@ -30,6 +31,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [fontsLoaded] = useFonts({
+    HankenGrotesk_300Light,
     HankenGrotesk_400Regular,
     HankenGrotesk_400Regular_Italic,
     HankenGrotesk_500Medium,

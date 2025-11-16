@@ -12,7 +12,7 @@ export default function TabTwoScreen() {
       <ScrollView className='-mb-[30px]'>
         <CardMoneyPlacing />
         <MenuMoneyTrack customClass={`px-[30px]`}/>
-        <RecentlyCashflow customClass={`px-[30px]`}/>
+        <RecentlyCashflow customClass={`px-[30px]  mb-[80px]`}/>
       </ScrollView>
     </SafeAreaView>
   );
