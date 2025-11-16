@@ -20,7 +20,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Money Track',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={color} />,
         }}
       />
       <Tabs.Screen

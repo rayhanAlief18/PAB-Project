@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function HomeScreen() {
   return (
     <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
-      <Header name='Rayhan Alief Febryan'customClass='px-[30px]'/>
+      <Header name='Azhim'customClass='px-[30px]'/>
       <CardMain customClass='px-[30px]'/>
       <PieChartDashboard customClass='my-[30px] px-[30px]'/>
       <TaskSummary customClass='px-[30px]'/>
