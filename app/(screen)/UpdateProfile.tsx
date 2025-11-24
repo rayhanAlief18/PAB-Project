@@ -14,9 +14,9 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function EditProfileScreen() {
     const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
     const [age, setAge] = useState("");
-    const [password, setPassword] = useState("");
 
     return (
         <>

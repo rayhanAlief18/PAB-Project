@@ -60,7 +60,6 @@ export default function PieChartDashboard({ customClass }: customClassType) {
                             radius={80}
                             innerCircleColor="#F5F5F5"
                             showText={false}
-                            textSize={8}
                             strokeWidth={2}
                             strokeColor="#F5F5F5"
                         />

@@ -9,7 +9,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
       <ScrollView>
-        <HeaderDashboard name={'Rayhan Alief F'} customClass='px-[30px]' />
+        <HeaderDashboard name={'Salahuddin Al Ayyubi'} customClass='px-[30px]' />
         <CardMain customClass='px-[30px]' />
         <PieChartDashboard customClass='my-[30px] px-[30px]' />
         <TaskSummary customClass='px-[30px]' />

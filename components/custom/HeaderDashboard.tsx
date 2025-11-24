@@ -21,6 +21,7 @@ interface HeaderProps {
 export default function HeaderDashboard({ name, customClass }: HeaderProps) {
     const sambutan = () => {
         const jam = new Date().getHours();
+        
         if (jam >= 5 && jam < 11) return 'Good Morning';
         if (jam >= 11 && jam < 15) return 'Good Evening';
         if (jam >= 15 && jam < 20) return 'Good Afternoon';
