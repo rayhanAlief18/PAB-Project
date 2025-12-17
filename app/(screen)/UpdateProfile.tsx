@@ -1,5 +1,7 @@
 import HeaderPage from "@/components/custom/HeaderPage";
-import FormInput from "@/components/custom/Input/FormInput";
+import { FormInput } from "@/components/custom/Form";
+
+import FormInputs from "@/components/custom/Input/FormInput";
 import {
     Avatar,
     AvatarBadge,
@@ -12,6 +14,7 @@ import { Stack } from "expo-router";
 import React, { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Mail } from "lucide-react-native";
 export default function EditProfileScreen() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -45,7 +48,7 @@ export default function EditProfileScreen() {
 
                     {/* FORM */}
                     <VStack className="px-4 space-y-4 gap-3 pb-10">
-                        <FormInput
+                        <FormInputs
                             typeInput="default"
                             title="Username"
                             isPassword={false}
@@ -53,7 +56,7 @@ export default function EditProfileScreen() {
                             placeHolder="Username..."
                             setOnchange={setUsername} />
 
-                        <FormInput
+                        <FormInputs
                             typeInput="default"
                             isPassword={true}
                             title="Password"
@@ -61,7 +64,7 @@ export default function EditProfileScreen() {
                             placeHolder="Password..."
                             setOnchange={setPassword} />
 
-                        <FormInput
+                        <FormInputs
                             typeInput="default"
                             title="Nama Lengkap"
                             isPassword={false}
@@ -69,13 +72,21 @@ export default function EditProfileScreen() {
                             placeHolder="Nama Lengkap..."
                             setOnchange={setFullName} />
 
-                        <FormInput
+                        <FormInputs
                             typeInput="numeric"
                             title="Umur"
                             isPassword={false}
                             value={age}
                             placeHolder="Umur anda..."
                             setOnchange={setAge} />
+
+                        <FormInput
+                            icon={Mail}
+                            label="Age"
+                            // placeholder="Your Age"
+                            value={age}
+                            onChangeText={setAge}
+                            />
 
                     </VStack>
                     <View className="px-4">

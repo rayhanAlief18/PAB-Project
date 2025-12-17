@@ -29,7 +29,7 @@ export default function HeaderDashboard({ name, customClass }: HeaderProps) {
     }
     return (
         <>
-            <Box className={`bg-transparent py-4 ${customClass}`} >
+            <Box className={`bg-transparent py-4 mt-[8px] ${customClass}`} >
                 <HStack space="md" reversed={false} className='justify-between items-center'>
                     <HStack className='gap-4 items-center'>
                         <Avatar size="lg" className='border-2 border-[#4b4b4b]'>

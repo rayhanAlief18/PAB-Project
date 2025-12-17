@@ -40,8 +40,8 @@ export default function TodayTask({ customClass }: customClassType) {
         },
     ];
 
-    const filterTask = tasks.filter(task=>{
-        if(active === 'All') return true;
+    const filterTask = tasks.filter(task => {
+        if (active === 'All') return true;
         return task.status === active;
     })
     return (
@@ -57,14 +57,14 @@ export default function TodayTask({ customClass }: customClassType) {
                 </HStack>
             </ScrollView>
             <VStack className={`${customClass} gap-5`}>
-                {filterTask.map(task=>(
+                {filterTask.map(task => (
                     <ListTodo
                         title={task.title}
                         description={task.description}
                         start_time={task.start_time}
                         end_time={task.end_time}
-                        status={task.status} 
-                        />
+                        status={task.status}
+                    />
                 ))}
             </VStack>
         </View>

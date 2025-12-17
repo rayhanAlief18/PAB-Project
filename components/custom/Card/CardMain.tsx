@@ -18,7 +18,7 @@ export default function CardMain({customClass}:customClassType) {
     return (
         <>
             <View className={`mt-3 ${customClass}`}>
-                <Box className="bg-white p-5 border-[2px] rounded-[8px] py-[18px] px-[24px]">
+                <Box className="bg-white p-5 border-2 rounded-[8px] py-[18px] px-[24px]">
                     <VStack>
                         <HStack className='items-center gap-2 '>
                             <Wallet color={'#4b4b4b'} />

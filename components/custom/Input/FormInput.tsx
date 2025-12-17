@@ -26,7 +26,7 @@ interface FormInputPropsType {
 }
 
 
-export default function FormInput({ value, title, setOnchange, placeHolder, typeInput, isPassword }: FormInputPropsType) {
+export default function FormInputs({ value, title, setOnchange, placeHolder, typeInput, isPassword }: FormInputPropsType) {
     return (
         <>
             <View>

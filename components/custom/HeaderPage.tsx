@@ -1,9 +1,9 @@
+import { useNavigation } from 'expo-router'
 import { ChevronLeft, UserRoundPen } from 'lucide-react-native'
 import React from 'react'
-import { Pressable, Text, Touchable, View } from 'react-native'
+import { Pressable, Text, View } from 'react-native'
 import { Box } from '../ui/box'
 import { HStack } from '../ui/hstack'
-import { useNavigation } from 'expo-router'
 
 interface headerPropsType {
     title: string,

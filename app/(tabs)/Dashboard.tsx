@@ -1,9 +1,9 @@
+import CardMoneyPlacing from '@/components/custom/Card/CardMoneyPlacing';
+import HeaderDashboard from '@/components/custom/HeaderDashboard';
 import MenuMoneyTrack from '@/components/custom/Menu/MenuMoneyTrack';
 import RecentlyCashflow from '@/components/custom/RecentlyCashflow/RecentlyCashflow';
-import CardMoneyPlacing from '@/components/custom/Card/CardMoneyPlacing';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native';
-import HeaderDashboard from '@/components/custom/HeaderDashboard';
+import { SafeAreaView } from 'react-native-safe-area-context';
 export default function TabTwoScreen() {
   return (
 
