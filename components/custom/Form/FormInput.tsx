@@ -2,10 +2,10 @@ import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import React from 'react';
-import { TextInput, TextInputProps, Text } from 'react-native';
+import { Text, TextInput, TextInputProps } from 'react-native';
 
 interface FormInputProps extends TextInputProps {
-  label: string;
+  label?: string;
   icon?: React.ComponentType<{ size?: number; color?: string }>;
   containerClassName?: string;
   labelClassName?: string;
@@ -22,13 +22,13 @@ export default function FormInput({
 }: FormInputProps) {
   return (
     <VStack className={`gap-2 ${containerClassName || ''}`}>
-      {/* <Text 
+      <Text 
         className={`text-[14px] ${labelClassName || ''}`} 
         style={{ fontFamily: "HankenGrotesk_500Medium" }}
       >
         {label}
-      </Text> */}
-      <Box className='bg-white border-2 rounded-full px-4 py-3'>
+      </Text>
+      <Box className='bg-white border border-gray-300 rounded-full px-4 py-3'>
         {Icon ? (
           <HStack className='items-center gap-2'>
             <Icon size={18} color='#4B4B4B' />

@@ -57,8 +57,9 @@ export default function TodayTask({ customClass }: customClassType) {
                 </HStack>
             </ScrollView>
             <VStack className={`${customClass} gap-5`}>
-                {filterTask.map(task => (
+                {filterTask.map((task,index) => (
                     <ListTodo
+                        key={index}
                         title={task.title}
                         description={task.description}
                         start_time={task.start_time}

@@ -5,22 +5,24 @@ import { HStack } from "@/components/ui/hstack";
 import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
 import { router, Stack } from "expo-router";
-import { LockKeyholeOpen, Mail } from "lucide-react-native";
+import { CircleUserRound, LockKeyholeOpen } from "lucide-react-native";
 import React, { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Firebase
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../config/Firebase";
 
-// Image
 export default function Login() {
-    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const [error, setError] = useState("");
-    const handleLogin = () => {
+
+    const handleLogin = async () => {
         setError("");
 
-        if (!username || !password) {
+        if (!email || !password) {
             setError("Semua field wajib diisi");
             return;
         }
@@ -30,17 +32,43 @@ export default function Login() {
             return;
         }
 
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            Alert.alert(
+                "Login Berhasil",
+                "Selamat datang kembali",
+                [
+                    {
+                        text: "OK",
+                        onPress: () => router.replace("/(tabs)"),
+                    },
+                ]
+            );
+            const login = {
+                email,
+                password,
+            };
+            console.log(login);
 
+        } catch (error: any) {
+            setError("Gagal login, silakan coba lagi.");
+            console.log("LOGIN ERROR:", error.code);
 
-        const login = {
-            username,
-            password,
-        };
+            if (error.code === "auth/user-not-found") {
+                setError("Akun tidak ditemukan");
+            } else if (error.code === "auth/wrong-password") {
+                setError("Password salah");
+            } else if (error.code === "auth/invalid-email") {
+                setError("Format email tidak valid");
+            } else {
+                setError("Login gagal, coba lagi");
+            }
+            return;
+        }
 
-        router.push('/(tabs)/Dashboard');
-        console.log(login);
-        // kirim ke backend
     };
+
+
 
     return (
         <>
@@ -58,11 +86,11 @@ export default function Login() {
                     {/* form */}
                     <VStack className="mt-[30px] gap-8 justify-between">
                         <FormInput
-                            icon={Mail}
+                            icon={CircleUserRound}
                             label="Email"
                             placeholder="Email"
-                            value={username}
-                            onChangeText={setUsername}
+                            value={email}
+                            onChangeText={setEmail}
                         />
 
                         <FormInput
@@ -71,6 +99,7 @@ export default function Login() {
                             placeholder="Password"
                             value={password}
                             onChangeText={setPassword}
+                            secureTextEntry={true}
                         />
                         {error ? (
                             <Text

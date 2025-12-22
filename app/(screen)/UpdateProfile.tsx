@@ -1,7 +1,6 @@
-import HeaderPage from "@/components/custom/HeaderPage";
 import { FormInput } from "@/components/custom/Form";
+import HeaderPage from "@/components/custom/HeaderPage";
 
-import FormInputs from "@/components/custom/Input/FormInput";
 import {
     Avatar,
     AvatarBadge,
@@ -10,16 +9,86 @@ import {
 } from '@/components/ui/avatar';
 import { Button } from "@/components/ui/button";
 import { VStack } from "@/components/ui/vstack";
-import { Stack } from "expo-router";
-import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { router, Stack } from "expo-router";
+import { onAuthStateChanged, signOut, updatePassword, updateProfile } from "firebase/auth";
+import { LockKeyholeOpen, Mail, UserCircle } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Mail } from "lucide-react-native";
+import { auth } from "../../config/Firebase";
+
 export default function EditProfileScreen() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [fullName, setFullName] = useState("");
-    const [age, setAge] = useState("");
+    const [email, setEmail] = useState<string>();
+    const [password, setPassword] = useState<string>("");
+    const [name, setName] = useState("");
+    const [userLogins, setUserLogins] = useState<any>(null);
+
+    useEffect(() => {
+        const userLogin = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUserLogins(user);
+                setEmail(user.email || "");
+                setName(user.displayName || "");
+                setPassword("********");
+                console.log("adakah ? ", user.email, user.displayName);
+            }
+        });
+
+        return userLogin;
+    }, []);
+    const handleLogout = async () => {
+        
+
+        try {
+            await signOut(auth);
+            Alert.alert(
+                "Logout Berhasil",
+                "Anda telah keluar dari akun.",
+                [
+                    {
+                        text: "OK",
+                        onPress: () => {
+                            router.replace("/(auth)/Login");
+                        },
+                    },
+                ]
+            );
+            router.replace('/(auth)/Login');
+        } catch (error: any) {
+            console.log("LOGOUT ERROR:", error);
+            Alert.alert("Error", "Gagal logout, coba lagi", error);
+        }
+    }
+
+    const updateProfileUser = async () => {
+        const user = auth.currentUser;
+
+        if (!user) {
+            Alert.alert("Error", "User tidak terautentikasi");
+            return;
+        }
+        try {
+            await updateProfile(user, {
+                displayName: name,
+            });
+
+            // harus ada verifikasi kalo ganti email
+            // if (email && email !== user.email) {
+            //     await updateEmail(user, email);
+            // }
+
+            if (password.length >= 8) {
+                await updatePassword(user,password);
+            }
+
+            Alert.alert("Berhasil", "Profile berhasil diperbarui");
+
+        } catch (error: any) {
+            console.log("UPDATE PROFILE ERROR:", error);
+            Alert.alert("Error", "Gagal update profile");
+        }
+    }
+
 
     return (
         <>
@@ -47,58 +116,54 @@ export default function EditProfileScreen() {
                     </VStack>
 
                     {/* FORM */}
-                    <VStack className="px-4 space-y-4 gap-3 pb-10">
-                        <FormInputs
-                            typeInput="default"
-                            title="Username"
-                            isPassword={false}
-                            value={username}
-                            placeHolder="Username..."
-                            setOnchange={setUsername} />
-
-                        <FormInputs
-                            typeInput="default"
-                            isPassword={true}
-                            title="Password"
-                            value={password}
-                            placeHolder="Password..."
-                            setOnchange={setPassword} />
-
-                        <FormInputs
-                            typeInput="default"
-                            title="Nama Lengkap"
-                            isPassword={false}
-                            value={fullName}
-                            placeHolder="Nama Lengkap..."
-                            setOnchange={setFullName} />
-
-                        <FormInputs
-                            typeInput="numeric"
-                            title="Umur"
-                            isPassword={false}
-                            value={age}
-                            placeHolder="Umur anda..."
-                            setOnchange={setAge} />
-
+                    <VStack className="px-4 space-y-4 gap-3">
                         <FormInput
                             icon={Mail}
-                            label="Age"
-                            // placeholder="Your Age"
-                            value={age}
-                            onChangeText={setAge}
-                            />
+                            label="Email"
+                            placeholder="Your Email"
+                            value={email}
+                            onChangeText={setEmail}
+                        />
+
+                        <FormInput
+                            icon={LockKeyholeOpen}
+                            label="Password"
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={true}
+                        />
+
+                        <FormInput
+                            icon={UserCircle}
+                            label="Name"
+                            placeholder="Your Name"
+                            value={name}
+                            onChangeText={setName}
+                        />
 
                     </VStack>
-                    <View className="px-4">
+                    <VStack className="px-4">
                         <Button
-                            className="bg-[#2B8D47] rounded-2xl px-8 py-4"
+                            className="bg-[#2B8D47] rounded-full px-8 py-4 h-14 mt-12"
                             isHovered={false}
+                            onPress={updateProfileUser}
                         >
                             <Text
                                 className="text-white text-md tracking-[1px]"
-                                style={{ fontFamily: "HankenGrotesk_400Regular" }}>Save Change</Text>
+                                style={{ fontFamily: "HankenGrotesk_400Regular" }}>Save</Text>
                         </Button>
-                    </View>
+
+                        <Button
+                            className="bg-[#ba2e2e] rounded-full px-8 py-4 h-14 mt-[80px]"
+                            isHovered={false}
+                            onPress={handleLogout}
+                        >
+                            <Text
+                                className="text-white text-md tracking-[1px]"
+                                style={{ fontFamily: "HankenGrotesk_400Regular" }}>Logout</Text>
+                        </Button>
+                    </VStack>
                 </View>
             </SafeAreaView>
         </>

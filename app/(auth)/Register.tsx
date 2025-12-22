@@ -7,8 +7,12 @@ import { VStack } from "@/components/ui/vstack";
 import { router, Stack } from "expo-router";
 import { LockKeyholeOpen, Mail, User } from "lucide-react-native";
 import React, { useState } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Alert, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+//register
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../../config/Firebase/index";
 
 export default function Register() {
     const [email, setEmail] = useState("");
@@ -16,8 +20,9 @@ export default function Register() {
     const [nama, setNama] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
-    const handleRegister = () => {
+    const handleRegister = async () => {
         setError("");
 
         if (!email || !password || !confirmPassword || !nama) {
@@ -35,16 +40,58 @@ export default function Register() {
             return;
         }
 
-        const payload = {
-            email,
-            password,
-            nama,
-        };
+        try {
+            const payload = {
+                email,
+                password,
+                nama,
+            };
 
-        console.log(payload);
+            console.log(payload);
+
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password,);
+            await updateProfile(userCredential.user, {
+                displayName: nama,
+            });
+
+            
+                Alert.alert(
+                    "Registrasi Berhasil",
+                    "Akun berhasil dibuat. Silakan login.",
+                    [
+                        {
+                            text: "Login",
+                            onPress: () => router.replace("/(auth)/Login"),
+                        },
+                    ]
+                );
+        
+
+            router.push('/(auth)/Login');
+        }
+        catch (error: any) {
+            console.log("REGISTER ERROR:", error.code);
+            if (error.code === "auth/email-already-in-use") {
+                setError("Email sudah terdaftar");
+            } else if (error.code === "auth/invalid-email") {
+                setError("Format email tidak valid");
+            } else if (error.code === "auth/weak-password") {
+                setError("Password terlalu lemah");
+            } else {
+                setError("Register gagal, coba lagi");
+            }
+        }
+
+
         // kirim ke backend
     };
 
+    const clearMessages = () => {
+        setError("");
+        setSuccess("");
+    }
+
+    
     return (
         <>
             <Stack.Screen options={{ headerShown: false }} />
@@ -80,14 +127,12 @@ export default function Register() {
                             onChangeText={setNama}
                         />
 
-
                         <FormInput
                             icon={Mail}
                             label="Email"
                             placeholder="Email"
                             value={email}
                             onChangeText={setEmail}
-                            keyboardType="email-address"
                         />
 
                         <FormInput
@@ -129,7 +174,7 @@ export default function Register() {
                         </Button>
 
                         <HStack className="justify-center">
-                            <Pressable onPress={()=>router.push('/(auth)/Login')}>
+                            <Pressable onPress={() => router.push('/(auth)/Login')}>
                                 <Text
                                     className="text-center text-[#4b4b4b]"
                                     style={{ fontFamily: "HankenGrotesk_400regular" }}
