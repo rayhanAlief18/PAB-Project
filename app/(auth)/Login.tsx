@@ -76,7 +76,7 @@ export default function Login() {
             <SafeAreaView className="flex-1 bg-[#F2F2F4] flex-1 ">
                 <View className={'px-[30px] mt-20 px-[50px] flex-1'}>
                     <VStack className="gap-2 items-center mt-[30px]">
-                        <Text className="text-4xl tracking-tighter" style={{ fontFamily: "HankenGrotesk_800ExtraBold" }}>We Say Hello !</Text>
+                        <Text className="text-4xl tracking-tighter" style={{ fontFamily: "HankenGrotesk_800ExtraBold" }}>We Say Hellos !</Text>
                         <VStack className="items-center mt-[20px]">
                             <Text className="text-[#4b4b4b] text-md" style={{ fontFamily: "HankenGrotesk_400regular" }}>Welcome back, Use your email</Text>
                             <Text className="text-[#4b4b4b] text-md" style={{ fontFamily: "HankenGrotesk_400regular" }}>and password to log in.</Text>
