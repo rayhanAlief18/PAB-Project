@@ -34,7 +34,11 @@ export default function FormDatePicker({
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    // Tambahkan Jam dan Menit
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+
+    return `${day}-${month}-${year}/ ${hours}:${minutes} WIB`;
   };
 
   const formatDateForWeb = (date: Date | null): string => {
@@ -42,7 +46,7 @@ export default function FormDatePicker({
     // Pastikan date adalah Date object yang valid
     const dateObj = date instanceof Date ? date : new Date(date);
     if (isNaN(dateObj.getTime())) return '';
-    
+
     const year = dateObj.getFullYear();
     const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
     const day = dateObj.getDate().toString().padStart(2, '0');
@@ -102,7 +106,7 @@ export default function FormDatePicker({
         dateValue = '';
       }
     }
-    
+
     let minDateValue = '';
     if (minimumDate) {
       try {
@@ -112,11 +116,11 @@ export default function FormDatePicker({
         minDateValue = '';
       }
     }
-    
+
     return (
       <VStack className={`gap-2 ${containerClassName || ''}`}>
-        <Text 
-          className={`text-[14px] ${labelClassName || ''}`} 
+        <Text
+          className={`text-[14px] ${labelClassName || ''}`}
           style={{ fontFamily: "HankenGrotesk_500Medium" }}
         >
           {label}
@@ -126,11 +130,11 @@ export default function FormDatePicker({
             {Icon && <Icon size={18} color='#4B4B4B' />}
             {/* @ts-ignore - HTML input for web platform */}
             <input
-              type="date"
+              type="text"
               value={dateValue}
               onChange={handleWebDateChange}
               min={minDateValue || undefined}
-              className="flex-1 text-[16px] bg-transparent border-none outline-none text-black"
+              className="flex-1 text-[16px] bg-transparent border-none outline-none text-black rounded-full"
               style={{ fontFamily: "HankenGrotesk_400Regular", width: '100%', color: '#000000' }}
               placeholder={placeholder}
             />
@@ -142,8 +146,8 @@ export default function FormDatePicker({
 
   return (
     <VStack className={`gap-2 ${containerClassName || ''}`}>
-      <Text 
-        className={`text-[14px] ${labelClassName || ''}`} 
+      <Text
+        className={`text-[14px] ${labelClassName || ''}`}
         style={{ fontFamily: "HankenGrotesk_500Medium" }}
       >
         {label}
@@ -152,10 +156,10 @@ export default function FormDatePicker({
         setTempDate(value || new Date());
         setShowPicker(true);
       }} activeOpacity={0.7}>
-        <Box className='bg-white border-2 rounded-[8px] px-4 py-3'>
+        <Box className='bg-white rounded-full border border-gray-400 px-4 py-3'>
           <HStack className='items-center gap-2'>
             {Icon && <Icon size={18} color='#4B4B4B' />}
-            <Text 
+            <Text
               className={`flex-1 text-[16px] ${value ? 'text-black' : 'text-[#9CA3AF]'}`}
               style={{ fontFamily: "HankenGrotesk_400Regular" }}
             >
@@ -174,38 +178,41 @@ export default function FormDatePicker({
               onRequestClose={handleCancel}
             >
               <View className='flex-1 justify-end bg-black/50'>
-                <View className='bg-white rounded-t-[20px] p-5'>
+                <View className='bg-gray-800 rounded-t-[20px] p-5 bg-gray-800'>
                   <HStack className='justify-between items-center mb-4'>
                     <TouchableOpacity onPress={handleCancel}>
-                      <Text 
-                        className='text-[16px] text-[#9CA3AF]'
+                      <Text
+                        className='text-[16px] text-white'
                         style={{ fontFamily: "HankenGrotesk_500Medium" }}
                       >
                         Batal
                       </Text>
                     </TouchableOpacity>
-                    <Text 
-                      className='text-[18px]'
+                    <Text
+                      className='text-[18px] text-white'
                       style={{ fontFamily: "HankenGrotesk_700Bold" }}
                     >
                       {label}
                     </Text>
                     <TouchableOpacity onPress={handleConfirm}>
-                      <Text 
-                        className='text-[16px] text-black'
+                      <Text
+                        className='text-[16px] text-white'
                         style={{ fontFamily: "HankenGrotesk_700Bold" }}
                       >
                         Selesai
                       </Text>
                     </TouchableOpacity>
                   </HStack>
-                  <DateTimePicker
-                    value={tempDate}
-                    mode="date"
-                    display="spinner"
-                    onChange={handleDateChange}
-                    minimumDate={minimumDate}
-                  />
+                  <HStack className='justify-center items-center'>
+                    <DateTimePicker
+                      className='text-white'
+                      value={tempDate}
+                      mode="date"
+                      display="spinner"
+                      onChange={handleDateChange}
+                      minimumDate={minimumDate}
+                    />
+                  </HStack>
                 </View>
               </View>
             </Modal>
@@ -213,7 +220,7 @@ export default function FormDatePicker({
             <DateTimePicker
               value={value || new Date()}
               mode="date"
-              display="default"
+              display="spinner"
               onChange={handleDateChange}
               minimumDate={minimumDate}
             />

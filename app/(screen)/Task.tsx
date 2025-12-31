@@ -87,7 +87,7 @@ export default function TasksScreen() {
 
   return (
     <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
-      <HeaderPage title='Tambah Task'/>
+      <HeaderPage title='Task'/>
       <ScrollView className='flex-1'>
         <VStack className='px-[30px] py-[20px] gap-5 justify-center'>
 

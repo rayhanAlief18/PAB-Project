@@ -1,0 +1,139 @@
+// src/components/custom/Input/DatePickerInput.tsx
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { Calendar } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { Platform, TouchableOpacity } from 'react-native';
+
+// Import dari local UI components
+import {
+    FormControl,
+    FormControlError,
+    FormControlErrorText,
+    FormControlLabel,
+    FormControlLabelText
+} from '@/components/ui/form-control';
+import { Input, InputField, InputIcon } from '@/components/ui/input';
+
+interface DatePickerInputProps {
+    value: string; // Format: YYYY-MM-DD
+    title: string;
+    setOnChange: (date: string) => void;
+    placeholder?: string;
+    error?: string;
+    isRequired?: boolean;
+    isDisabled?: boolean;
+    minDate?: Date;
+    maxDate?: Date;
+    variant?: 'outline' | 'rounded' | 'underlined';
+}
+
+export default function atePickerInput({
+    value,
+    title,
+    setOnChange,
+    placeholder = 'Pilih tanggal',
+    error,
+    isRequired = false,
+    isDisabled = false,
+    minDate,
+    maxDate,
+    variant = 'rounded',
+}: DatePickerInputProps) {
+    const [showPicker, setShowPicker] = useState(false);
+    const [internalDate, setInternalDate] = useState<Date>(
+        value ? new Date(value) : new Date()
+    );
+
+    // Format date to YYYY-MM-DD
+    const formatDate = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    // Format untuk display (Indonesia format)
+    const formatDisplay = (dateStr: string): string => {
+        if (!dateStr) return '';
+        try {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+            });
+        } catch {
+            return dateStr;
+        }
+    };
+
+    const handleDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
+        setShowPicker(false);
+
+        if (selectedDate) {
+            setInternalDate(selectedDate);
+            const formattedDate = formatDate(selectedDate);
+            setOnChange(formattedDate);
+        }
+    };
+
+    const handlePress = () => {
+        if (!isDisabled) {
+            setShowPicker(true);
+        }
+    };
+
+    return (
+        <FormControl
+            isInvalid={!!error}
+            isDisabled={isDisabled}
+        >
+            <FormControlLabel>
+                <FormControlLabelText className="text-gray-500 mb-1 tracking-[-0.5px]"
+                    style={{ fontFamily: "HankenGrotesk_500Medium" }}>
+                    {title}
+                    {isRequired && ' *'}
+                </FormControlLabelText>
+            </FormControlLabel>
+
+            <TouchableOpacity onPress={handlePress} disabled={isDisabled}>
+                <Input
+                    variant={variant}
+                    isDisabled={isDisabled}
+                    className={`bg-white border-2 border-gray-300 ${variant === 'rounded' ? 'rounded-full' : 'rounded-md'
+                        }`}
+                >
+                    <InputIcon as={Calendar}/>
+                    <InputField
+                        placeholder={placeholder}
+                        value={formatDisplay(value)}
+                        editable={false}
+                        pointerEvents="none"
+                        style={{ 
+                            fontFamily: 'Inter',
+                            color: 'black' // ✅ Masukkan ke sini
+                          }}
+                        className="text-black"
+                    />
+                </Input>
+            </TouchableOpacity>
+
+            {error && (
+                <FormControlError>
+                    <FormControlErrorText>{error}</FormControlErrorText>
+                </FormControlError>
+            )}
+
+            {showPicker && (
+                <DateTimePicker
+                    value={internalDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={handleDateChange}
+                    minimumDate={minDate}
+                    maximumDate={maxDate}
+                />
+            )}
+        </FormControl>
+    );
+}

@@ -1,7 +1,7 @@
-import { Input, InputField } from '@/components/ui/input';
+import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
+import { BookAlertIcon } from 'lucide-react-native';
 import React from 'react';
 import { Text, View } from 'react-native';
-
 type KeyboardTypeOptions =
     | "default"
     | "email-address"
@@ -16,30 +16,44 @@ type KeyboardTypeOptions =
     | "twitter"
     | "web-search";
 
+    type VariantType =
+    | "rounded"
+    | "underlined"
+    | "outline";
+
 interface FormInputPropsType {
     value: string,
     title: string,
-    setOnchange: (text: string) => void,
-    placeHolder?: string,
+    setOnChange: (text: string) => void,
+    placeholder?: string,
     typeInput: KeyboardTypeOptions,
-    isPassword?:boolean,
+    isPassword?: boolean,
+    isRequired?: boolean,
+    variant?: VariantType
 }
 
 
-export default function FormInputs({ value, title, setOnchange, placeHolder, typeInput, isPassword }: FormInputPropsType) {
+export default function FormInputs({ value, title, setOnChange, placeholder, typeInput, isPassword, variant, isRequired }: FormInputPropsType) {
     return (
         <>
             <View>
-                <Text className="text-gray-500 mb-1 tracking-[-0.5px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>{title}: {value}</Text>
-                <Input className="rounded-md bg-white border-2 border-gray-300">
+                <Text className="text-black mb-1 tracking-[-0.5px]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>{title}</Text>
+                <Input
+                    isFocused={false}
+                    className="bg-white border border-gray-400 h-12 "
+                    variant={variant}   
+                    isRequired ={isRequired}>
+                    <InputSlot className="pl-5">
+                        <InputIcon as={BookAlertIcon} />
+                    </InputSlot>
                     <InputField
-                        type={isPassword ? 'password':'text'}
+                        type={isPassword ? 'password' : 'text'}
                         keyboardType={typeInput}
                         style={{ fontFamily: "HankenGrotesk_400Regular" }}
                         className="text-black"
                         value={value}
-                        onChangeText={setOnchange}
-                        placeholder={placeHolder}
+                        onChangeText={setOnChange}
+                        placeholder={placeholder}
                     />
                 </Input>
             </View>

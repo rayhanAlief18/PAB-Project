@@ -1,16 +1,14 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import LottieView from "lottie-react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useEffect } from "react";
-import { router } from "expo-router";
 
 export default function index() {
     useEffect(() => {
         const timer = setTimeout(() => {
             // pindah ke halaman utama
-            router.replace('/(auth)/Login');
+            router.replace('/(tabs)');
         },3000);
 
         return () => clearTimeout(timer);

@@ -53,7 +53,7 @@ export default function FormPriorityPicker({
             className='flex-1'
           >
             <Box 
-              className={`border-2 rounded-[8px] py-3 px-4 ${
+              className={`border-2 rounded-full py-3 px-4 ${
                 value === priority 
                   ? getPriorityColor(priority)
                   : 'bg-white border-[#E5E5E5]'
