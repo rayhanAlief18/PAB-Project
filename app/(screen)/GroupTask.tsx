@@ -4,15 +4,29 @@ import { HStack } from '@/components/ui/hstack'
 import { VStack } from '@/components/ui/vstack'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { router } from 'expo-router'
+import { deleteDoc, doc } from "firebase/firestore"
 import { Briefcase, CircleArrowRight, Clock, Plus, Trash2 } from 'lucide-react-native'
 import React, { useEffect, useState } from 'react'
-import { RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import { Modal, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { db } from "../../config/Firebase/index"; // pastikan ini bener
+
+
+
+interface SubtaskProps {
+    id: string,
+    task: string,
+    priority: 'Low' | 'Medium' | 'High',
+    description?: string,
+    status: 'On Progress' | 'Done',
+    createdAt: Date,
+}
 
 export default function GroupTask() {
     const [groupTaskData, setGroupsTaskData] = useState<any[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+
 
     const loadData = async () => {
         const local = await AsyncStorage.getItem("groupTasks");
@@ -50,11 +64,36 @@ export default function GroupTask() {
         return '#EF4444'; // red
     };
 
+    // Delete
+    
+    const [showDeleteModal, setShowDeleteModal] = useState(false)
+    const [selectedGroupTaskId, setSelectedGroupTaskId] = useState<string | null>(null);
+    const handleDelete = async (selectedGroup:string)=>{
+        try{
+            // hapus firebase    
+            await deleteDoc(doc(db,"groupTasks",selectedGroup));
+
+            //hapus lokal (hanya pilih id untuk disimpan ulang tanpa id yang di select)
+            const updateData = groupTaskData.filter(
+                item => item.id !== selectedGroup
+            );
+            setGroupsTaskData(updateData)
+            
+            await AsyncStorage.setItem(
+                'groupTasks',
+                JSON.stringify(updateData)
+            )
+
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
             <HeaderPage title='Group Tasks' />
-            
-            <ScrollView 
+
+            <ScrollView
                 className='flex-1'
                 showsVerticalScrollIndicator={false}
                 refreshControl={
@@ -66,28 +105,28 @@ export default function GroupTask() {
                     <View className='px-5 pt-4 pb-2'>
                         <HStack className='gap-3'>
                             <Box className='flex-1 bg-white rounded-2xl p-4 border border-gray-400'>
-                                <Text 
-                                    className='text-gray-500 text-xs mb-1' 
+                                <Text
+                                    className='text-gray-500 text-xs mb-1'
                                     style={{ fontFamily: "HankenGrotesk_500Medium" }}
                                 >
                                     Total Tasks
                                 </Text>
-                                <Text 
-                                    className='text-2xl' 
+                                <Text
+                                    className='text-2xl'
                                     style={{ fontFamily: "HankenGrotesk_700Bold" }}
                                 >
                                     {groupTaskData.length}
                                 </Text>
                             </Box>
                             <Box className='flex-1 bg-white rounded-2xl p-4 border border-gray-400'>
-                                <Text 
-                                    className='text-gray-500 text-xs mb-1' 
+                                <Text
+                                    className='text-gray-500 text-xs mb-1'
                                     style={{ fontFamily: "HankenGrotesk_500Medium" }}
                                 >
                                     Completed
                                 </Text>
-                                <Text 
-                                    className='text-2xl text-green-600' 
+                                <Text
+                                    className='text-2xl text-green-600'
                                     style={{ fontFamily: "HankenGrotesk_700Bold" }}
                                 >
                                     {groupTaskData.filter(t => t.task_success === t.task_all).length}
@@ -104,14 +143,14 @@ export default function GroupTask() {
                             <View className='bg-gray-100 rounded-full p-6 mb-4'>
                                 <Briefcase size={48} color='#9CA3AF' strokeWidth={1.5} />
                             </View>
-                            <Text 
-                                className='text-xl text-gray-900 mb-2' 
+                            <Text
+                                className='text-xl text-gray-900 mb-2'
                                 style={{ fontFamily: "HankenGrotesk_700Bold" }}
                             >
                                 No Group Tasks Yet
                             </Text>
-                            <Text 
-                                className='text-gray-500 text-center px-8' 
+                            <Text
+                                className='text-gray-500 text-center px-8'
                                 style={{ fontFamily: "HankenGrotesk_400Regular" }}
                             >
                                 Create your first group task to start collaborating with your team
@@ -119,11 +158,13 @@ export default function GroupTask() {
                         </View>
                     ) : (
                         groupTaskData.map((item, index) => {
-                            const percentage = Math.round((item.task_success / item.task_all) * 100);
+                            const task = item.task.length;
+                            const taskDone = item.task.filter((t:SubtaskProps)=>t.status==='Done').length
+                            const percentage = Math.round((taskDone / task) * 100);
                             const progress = percentage / 100;
                             const progressColor = getProgressColor(percentage);
                             const isCompleted = item.task_success === item.task_all;
-                            
+
                             const deadline = new Date(item.deadline).toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
@@ -147,8 +188,8 @@ export default function GroupTask() {
                                         {/* Header */}
                                         <HStack className='justify-between items-start mb-3'>
                                             <View className='flex-1 pr-3'>
-                                                <Text 
-                                                    className='text-xl leading-6 text-gray-900 mb-1' 
+                                                <Text
+                                                    className='text-xl leading-6 text-gray-900 mb-1'
                                                     style={{ fontFamily: "HankenGrotesk_700Bold" }}
                                                     numberOfLines={2}
                                                 >
@@ -156,16 +197,21 @@ export default function GroupTask() {
                                                 </Text>
                                             </View>
                                             {isCompleted && (
-                                                <View className='bg-red-100 rounded-full p-1.5'>
+                                                <TouchableOpacity
+                                                    onPress={()=>{
+                                                        setShowDeleteModal(true)
+                                                        setSelectedGroupTaskId(item.id)
+                                                    }}
+                                                    className='bg-red-100 rounded-full p-1.5'>
                                                     <Trash2 size={20} color='#EF4444' strokeWidth={2.5} />
-                                                </View>
+                                                </TouchableOpacity>
                                             )}
                                         </HStack>
 
                                         {/* Description */}
                                         {item.description && (
-                                            <Text 
-                                                className='text-sm text-gray-600 mb-4 leading-5' 
+                                            <Text
+                                                className='text-sm text-gray-600 mb-4 leading-5'
                                                 style={{ fontFamily: "HankenGrotesk_400Regular" }}
                                                 numberOfLines={2}
                                             >
@@ -176,21 +222,21 @@ export default function GroupTask() {
                                         {/* Progress Section */}
                                         <View className='mb-4'>
                                             <HStack className='justify-between items-center mb-2'>
-                                                <Text 
-                                                    className='text-xs text-gray-500' 
+                                                <Text
+                                                    className='text-xs text-gray-500'
                                                     style={{ fontFamily: "HankenGrotesk_500Medium" }}
                                                 >
                                                     Progress
                                                 </Text>
                                                 <HStack className='items-center gap-1'>
-                                                    <Text 
-                                                        className='text-sm' 
+                                                    <Text
+                                                        className='text-sm'
                                                         style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
                                                     >
-                                                        {item.task_success}/{item.task_all}
+                                                        {taskDone} / {task} %
                                                     </Text>
-                                                    <Text 
-                                                        className='text-xs text-gray-500' 
+                                                    <Text
+                                                        className='text-xs text-gray-500'
                                                         style={{ fontFamily: "HankenGrotesk_500Medium" }}
                                                     >
                                                         tasks
@@ -198,22 +244,22 @@ export default function GroupTask() {
                                                 </HStack>
                                             </HStack>
                                             <HStack className='items-center gap-3'>
-                                                <Progress.Bar 
-                                                    progress={20 / 100} 
+                                                <Progress.Bar
+                                                    progress={percentage / 100}
                                                     width={null}
                                                     style={{ flex: 1 }}
-                                                    animated 
+                                                    animated
                                                     color={progressColor}
                                                     unfilledColor='#E5E7EB'
                                                     borderWidth={0}
                                                     height={6}
                                                     borderRadius={3}
                                                 />
-                                                <Text 
-                                                    className='text-sm min-w-[45px] text-right' 
-                                                    style={{ 
+                                                <Text
+                                                    className='text-sm min-w-[45px] text-right'
+                                                    style={{
                                                         fontFamily: "HankenGrotesk_700Bold",
-                                                        color: progressColor 
+                                                        color: progressColor
                                                     }}
                                                 >
                                                     {percentage}%
@@ -230,8 +276,8 @@ export default function GroupTask() {
                                                 <View className='bg-blue-50 rounded-full p-1.5'>
                                                     <Clock size={14} color='#3B82F6' />
                                                 </View>
-                                                <Text 
-                                                    className='text-xs text-gray-600 flex-1' 
+                                                <Text
+                                                    className='text-xs text-gray-600 flex-1'
                                                     style={{ fontFamily: "HankenGrotesk_500Medium" }}
                                                     numberOfLines={1}
                                                 >
@@ -242,7 +288,7 @@ export default function GroupTask() {
                                             <HStack className='items-center gap-2'>
                                                 {item.priority && (
                                                     <Box className={`${priority.bg} ${priority.border} border rounded-full px-3 py-1`}>
-                                                        <Text 
+                                                        <Text
                                                             className={`${priority.text} text-[10px] font-semibold uppercase`}
                                                             style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
                                                         >
@@ -265,6 +311,62 @@ export default function GroupTask() {
                 {/* Bottom Spacing */}
                 <View className='h-24' />
             </ScrollView>
+
+            <Modal
+                transparent
+                animationType="fade"
+                visible={showDeleteModal}
+                onRequestClose={() => setShowDeleteModal(false)}
+            >
+                {/* Overlay */}
+                <View className="flex-1 bg-black/40 justify-center items-center px-6">
+
+                    {/* Card */}
+                    <View className="bg-white w-full rounded-2xl p-6">
+
+                        <Text
+                            className="text-lg text-gray-900"
+                            style={{ fontFamily: "HankenGrotesk_600SemiBold" }}
+                        >
+                            Hapus GroupTask?
+                        </Text>
+
+                        <Text
+                            className="text-gray-500 mt-2"
+                            style={{ fontFamily: "HankenGrotesk_400Regular" }}
+                        >
+                            Grouptask yang dihapus tidak dapat dikembalikan.
+                        </Text>
+
+                        {/* Action */}
+                        <HStack className="justify-end mt-6 gap-2">
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setShowDeleteModal(false);
+                                    setSelectedGroupTaskId(null);
+                                }}
+                                className="px-4 py-2 rounded-lg bg-gray-100"
+                            >
+                                <Text className="text-gray-700">Batal</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => {
+                                    if (selectedGroupTaskId) {
+                                        handleDelete(selectedGroupTaskId);
+                                    }
+                                    setShowDeleteModal(false);
+                                    setSelectedGroupTaskId(null);
+                                }}
+                                className="px-4 py-2 rounded-lg bg-red-500"
+                            >
+                                <Text className="text-white">Hapus</Text>
+                            </TouchableOpacity>
+                        </HStack>
+
+                    </View>
+                </View>
+            </Modal>
 
             {/* Floating Action Button */}
             <View className='absolute bottom-6 right-6'>

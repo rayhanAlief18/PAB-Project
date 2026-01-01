@@ -8,7 +8,7 @@ export default function index() {
     useEffect(() => {
         const timer = setTimeout(() => {
             // pindah ke halaman utama
-            router.replace('/(tabs)');
+            router.replace('/(auth)/Login');
         },3000);
 
         return () => clearTimeout(timer);
