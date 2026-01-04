@@ -10,6 +10,7 @@ interface JamSholatProps {
     maghrib: string;
     isya: string;
     tanggal: string;
+    lokasi: string;
 }
 
 interface JadwalSholatProps {
@@ -22,7 +23,7 @@ interface WaktuSholatItem {
 }
 
 export default function JadwalSholat({ dataJamSholat }: JadwalSholatProps) {
-    const { imsak, subuh, dhuha, dzuhur, ashar, maghrib, isya, tanggal } = dataJamSholat;
+    const { imsak, subuh, dhuha, dzuhur, ashar, maghrib, isya, tanggal, lokasi } = dataJamSholat;
 
     const waktuSholat: WaktuSholatItem[] = [
         { nama: 'Imsak', waktu: imsak },
@@ -43,7 +44,10 @@ export default function JadwalSholat({ dataJamSholat }: JadwalSholatProps) {
             {/* Header */}
             <View className="bg-gray-800 px-6 py-4">
                 <View className="flex-row justify-between items-center">
-                    <Text className="text-white text-lg font-bold">Jadwal Sholat</Text>
+                    <View>
+                        <Text className="text-white text-lg font-bold">Jadwal Sholat</Text>
+                        <Text className="text-white text-sm">{lokasi}</Text>
+                    </View>
                     <View className="bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">
                         <Text className="text-white text-sm font-semibold">{tanggal || '--:--'}</Text>
                     </View>
@@ -58,7 +62,7 @@ export default function JadwalSholat({ dataJamSholat }: JadwalSholatProps) {
                         className={`
               flex-row justify-between items-center 
               bg-gray-50 px-5 py-4 rounded-xl
-              ${index !== waktuSholat.length - 1 ? 'mb-3' : ''}
+              mb-3
             `}
                     >
                         <Text className="text-gray-800 text-base font-semibold">

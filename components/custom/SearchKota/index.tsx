@@ -10,6 +10,8 @@ import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import FormInputs from '../Input/FormInput'
 import JadwalSholat from '../JadwalSholat/index'
+import Cuaca from '../Cuaca/index'
+
 export default function index() {
     const [search, setSearch] = useState('');
     const [isView, setIsView] = useState(false);
@@ -18,6 +20,7 @@ export default function index() {
         lokasi: '',
         name: '',
     });
+    const API_KEY = "8a12536d8bd199b35f74b66937dabca7";
     const [showJamSholat, setShowJamSholat] = useState(true)
     const [jamSholat, setJamSholat] = useState({
         imsak: "",
@@ -27,7 +30,8 @@ export default function index() {
         ashar: "",
         maghrib: "",
         isya: "",
-        tanggal: ""
+        tanggal: "",
+        lokasi: "",
     })
 
     const searchKota = async () => {
@@ -74,10 +78,12 @@ export default function index() {
             lokasi,
             name,
         })
-        console.log("selected city", selectCity);
+        // console.log("selected city", selectCity);
         setIsView(false)
         setJadwalSholat(id, lokasi);
+        fetchWeather(name);
     }
+
 
     const setJadwalSholat = async (id: string, lokasi: string) => {
         const res = await axios.get(
@@ -85,8 +91,10 @@ export default function index() {
             { params: { tz: 'Asia/Jakarta' } }
         )
 
-        console.log("res.data.data: ", res.data.data);
+        // console.log("res.data.data: ", res.data.data);
+        // console.log("res.kota: ", res.data.data.kabko);
         const response = res.data.data;
+        const daerah = res.data.data.kabko;
         const tanggalKey = Object.keys(response.jadwal)[0]
         const jadwal = response.jadwal[tanggalKey]
         setJamSholat({
@@ -98,9 +106,53 @@ export default function index() {
             maghrib: jadwal.maghrib,
             isya: jadwal.isya,
             tanggal: jadwal.tanggal,
+            lokasi: daerah,
         })
         setShowJamSholat(true)
-        console.log("JAMSHOLAT: ", jamSholat)
+        // console.log("JAMSHOLAT: ", jamSholat)
+    }
+    const [allWeather, setAllWeather] = useState({});
+    const [weather, setWeather] = useState({
+        wind:"",
+        cloud:"",
+        temperature: "",
+        temperature_min: "",
+        temperature_max: "",
+        sunrise:"",
+        sunset:"",
+    });
+    const fetchWeather = async (cityName: string) => {
+        try {
+            const res = await axios.get(
+                'https://api.openweathermap.org/data/2.5/weather',
+                {
+                    params: {
+                        q: `${cityName}`,
+                        appid: API_KEY,
+                        units: 'metric',
+                        lang: 'id',
+                    },
+                }
+            )
+            setAllWeather(res.data)
+            setWeather({
+                wind:res.data.wind.speed,
+                cloud:res.data.clouds.all,
+                temperature: res.data.main.temp,
+                temperature_min: res.data.main.temp_min,
+                temperature_max: res.data.main.temp_max,
+                sunrise:res.data.sys.sunrise,
+                sunset:res.data.sys.sunset,
+            })
+
+
+            // console.log('data ori res:', res)
+            // console.log('data ori res.data:', JSON.stringify(res.data, null, 2))
+            console.log('data dari API:', weather)
+            // console.log("ini data cuaca", cityName);
+        } catch (error) {
+            console.log('Gagal ambil cuaca:', error)
+        }
     }
     return (
         <>
@@ -182,7 +234,9 @@ export default function index() {
 
             {/* Cuaca */}
             <View>
-
+                {showJamSholat && Object.keys(allWeather).length > 0 && (
+                    <Cuaca weather={weather}/>
+                )}
             </View>
 
             {/* Jadwal Sholat */}
