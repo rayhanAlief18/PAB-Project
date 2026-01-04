@@ -113,13 +113,13 @@ export default function index() {
     }
     const [allWeather, setAllWeather] = useState({});
     const [weather, setWeather] = useState({
-        wind:"",
-        cloud:"",
-        temperature: "",
-        temperature_min: "",
-        temperature_max: "",
-        sunrise:"",
-        sunset:"",
+        wind:0,
+        cloud:0,
+        temperature: 0,
+        temperature_min: 0,
+        temperature_max: 0,
+        sunrise:0,
+        sunset:0,
     });
     const fetchWeather = async (cityName: string) => {
         try {
