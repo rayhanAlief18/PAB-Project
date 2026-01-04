@@ -8,9 +8,9 @@ import { collection, getDocs } from 'firebase/firestore'
 import { Globe2Icon, LucideMapPinHouse, Search, SearchIcon, X } from 'lucide-react-native'
 import React, { useEffect, useState } from 'react'
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
+import Cuaca from '../Cuaca/index'
 import FormInputs from '../Input/FormInput'
 import JadwalSholat from '../JadwalSholat/index'
-import Cuaca from '../Cuaca/index'
 
 export default function index() {
     const [search, setSearch] = useState('');
@@ -113,13 +113,13 @@ export default function index() {
     }
     const [allWeather, setAllWeather] = useState({});
     const [weather, setWeather] = useState({
-        wind:0,
-        cloud:0,
+        wind: 0,
+        cloud: 0,
         temperature: 0,
         temperature_min: 0,
         temperature_max: 0,
-        sunrise:0,
-        sunset:0,
+        sunrise: 0,
+        sunset: 0,
     });
     const fetchWeather = async (cityName: string) => {
         try {
@@ -136,13 +136,13 @@ export default function index() {
             )
             setAllWeather(res.data)
             setWeather({
-                wind:res.data.wind.speed,
-                cloud:res.data.clouds.all,
+                wind: res.data.wind.speed,
+                cloud: res.data.clouds.all,
                 temperature: res.data.main.temp,
                 temperature_min: res.data.main.temp_min,
                 temperature_max: res.data.main.temp_max,
-                sunrise:res.data.sys.sunrise,
-                sunset:res.data.sys.sunset,
+                sunrise: res.data.sys.sunrise,
+                sunset: res.data.sys.sunset,
             })
 
 
@@ -235,7 +235,7 @@ export default function index() {
             {/* Cuaca */}
             <View>
                 {showJamSholat && Object.keys(allWeather).length > 0 && (
-                    <Cuaca weather={weather}/>
+                    <Cuaca weather={weather} />
                 )}
             </View>
 
@@ -246,7 +246,12 @@ export default function index() {
                 )}
             </View>
 
-
+            {!showJamSholat == false &&(
+                <VStack className='h-full justify-end'>
+                    <Text className='text-center align-center'>Data belum dimuat,</Text>
+                    <Text className='text-center align-center'> silahkan cari terlebih dahulu...</Text>
+                </VStack>
+            )}
         </>
     )
 }

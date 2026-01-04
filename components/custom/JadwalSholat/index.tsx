@@ -40,7 +40,7 @@ export default function JadwalSholat({ dataJamSholat }: JadwalSholatProps) {
     };
 
     return (
-        <View className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+        <View className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 mb-8">
             {/* Header */}
             <View className="bg-gray-800 px-6 py-4">
                 <View className="flex-row justify-between items-center">
