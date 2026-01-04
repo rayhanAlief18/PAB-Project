@@ -4,14 +4,13 @@ import { HStack } from '@/components/ui/hstack'
 import { VStack } from '@/components/ui/vstack'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { router } from 'expo-router'
-import { deleteDoc, doc } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs } from "firebase/firestore"
 import { Briefcase, CircleArrowRight, Clock, Plus, Trash2 } from 'lucide-react-native'
 import React, { useEffect, useState } from 'react'
 import { Modal, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { db } from "../../config/Firebase/index"; // pastikan ini bener
-
 
 
 interface SubtaskProps {
@@ -26,12 +25,36 @@ interface SubtaskProps {
 export default function GroupTask() {
     const [groupTaskData, setGroupsTaskData] = useState<any[]>([]);
     const [refreshing, setRefreshing] = useState(false);
+    let active = true
 
+    const getDataFireStore = async () => {
+        const snapshot = await getDocs(collection(db, 'groupTasks'))
+
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }))
+    }
 
     const loadData = async () => {
-        const local = await AsyncStorage.getItem("groupTasks");
-        const parsed = local ? JSON.parse(local) : [];
-        setGroupsTaskData(parsed);
+        try {
+            const local = await AsyncStorage.getItem("groupTasks");
+            if (local) {
+                const parsed = local ? JSON.parse(local) : [];
+                if (active) setGroupsTaskData(parsed);
+                return;
+            }
+
+            const checkDatabase = await getDataFireStore()
+
+            if (active) {
+                console.log('Data groupTasks tidak ditemukan. Sistem sedang mencari di database.')
+                setGroupsTaskData(checkDatabase)
+                await AsyncStorage.setItem('groupTasks', JSON.stringify(checkDatabase))
+            }
+        } catch (error) {
+            console.log('Load data eror: ', error)
+        }
     };
 
     useEffect(() => {
@@ -65,26 +88,26 @@ export default function GroupTask() {
     };
 
     // Delete
-    
+
     const [showDeleteModal, setShowDeleteModal] = useState(false)
     const [selectedGroupTaskId, setSelectedGroupTaskId] = useState<string | null>(null);
-    const handleDelete = async (selectedGroup:string)=>{
-        try{
+    const handleDelete = async (selectedGroup: string) => {
+        try {
             // hapus firebase    
-            await deleteDoc(doc(db,"groupTasks",selectedGroup));
+            await deleteDoc(doc(db, "groupTasks", selectedGroup));
 
             //hapus lokal (hanya pilih id untuk disimpan ulang tanpa id yang di select)
             const updateData = groupTaskData.filter(
                 item => item.id !== selectedGroup
             );
             setGroupsTaskData(updateData)
-            
+
             await AsyncStorage.setItem(
                 'groupTasks',
                 JSON.stringify(updateData)
             )
 
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -159,7 +182,7 @@ export default function GroupTask() {
                     ) : (
                         groupTaskData.map((item, index) => {
                             const task = item.task.length;
-                            const taskDone = item.task.filter((t:SubtaskProps)=>t.status==='Done').length
+                            const taskDone = item.task.filter((t: SubtaskProps) => t.status === 'Done').length
                             const percentage = Math.round((taskDone / task) * 100);
                             const progress = percentage / 100;
                             const progressColor = getProgressColor(percentage);
@@ -198,7 +221,7 @@ export default function GroupTask() {
                                             </View>
                                             {isCompleted && (
                                                 <TouchableOpacity
-                                                    onPress={()=>{
+                                                    onPress={() => {
                                                         setShowDeleteModal(true)
                                                         setSelectedGroupTaskId(item.id)
                                                     }}

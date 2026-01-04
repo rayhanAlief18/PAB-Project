@@ -6,14 +6,14 @@ import { VStack } from '@/components/ui/vstack'
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { router, useLocalSearchParams } from 'expo-router'
 import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore"
-import { AlertCircle } from 'lucide-react-native'
+import { AlertCircle, ListCollapseIcon, LucideListPlus } from 'lucide-react-native'
 import React, { useState } from 'react'
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { db } from "../../../../config/Firebase"
 
 interface SubtaskProps {
-    id:string,
+    id: string,
     task: string,
     priority: 'Low' | 'Medium' | 'High',
     description?: string,
@@ -41,6 +41,7 @@ export default function SubTask() {
     const [description, setDescription] = useState('');
     const [estimatedTime, setEstimatedTime] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
     const [errors, setErrors] = useState({
         task: '',
     });
@@ -60,7 +61,7 @@ export default function SubTask() {
 
     const buildSubTaskData = (): SubtaskProps => {
         return {
-            id:id+Date.now().toString(),
+            id: id + Date.now().toString(),
             task,
             priority,
             description: description ? description : 'Jangan lupa untuk diselesaikan.',
@@ -152,33 +153,32 @@ export default function SubTask() {
 
         setIsLoading(true);
 
-        try{
+        try {
             const subTaskData = buildSubTaskData();
             const asyncSuccess = await updateAsyncStorage(subTaskData);
 
-            if(!asyncSuccess){
+            if (!asyncSuccess) {
                 throw new Error('Failed to save to AsyncStorage');
             }
-            
+
             //save ke firestore
             const firestoreSuccess = await updateFireStore(subTaskData);
 
-            if(firestoreSuccess){
+            if (firestoreSuccess) {
                 await macthAsyncStorageWithFireStore();
-                Alert.alert('Success','SubTask created and synced successfully!');
-            }else{
+                Alert.alert('Success', 'SubTask created and synced successfully!');
+            } else {
                 Alert.alert('Saved Locally', 'SubTask saved locally. Will sync when online.');
             }
             router.back();
-            console.log('Data AsyncStorage: ',AsyncStorage.getItem('groupTasks'));
+            console.log('Data AsyncStorage: ', AsyncStorage.getItem('groupTasks'));
 
-        }catch(error){
+        } catch (error) {
             console.error('❌ Error creating subtask:', error);
             Alert.alert('Error', 'Failed to create subtask. Please try again.');
-            setIsLoading(false);        
+            setIsLoading(false);
         }
     };
-
     return (
         <SafeAreaView className='flex-1 bg-[#F8F9FA]'>
             <HeaderPage title='Buat Sub Task' />
@@ -202,6 +202,7 @@ export default function SubTask() {
                                     setOnChange={setTask}
                                     placeholder='Masukkan nama tugas...'
                                     isPassword={false}
+                                    icon={ListCollapseIcon}
                                 />
 
                                 {/* Error Message */}
@@ -226,6 +227,7 @@ export default function SubTask() {
                                     setOnChange={setDescription}
                                     placeholder='Masukkan deskripsi...'
                                     isPassword={false}
+                                    icon={LucideListPlus}
                                 />
                             </View>
 

@@ -1,11 +1,13 @@
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { CircleArrowRight } from 'lucide-react-native';
-import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { db } from '@/config/Firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import * as Progress from 'react-native-progress';
-
 const dummyAccounts = [
     {
         id: 1,
@@ -40,35 +42,93 @@ const DateNow = new Date().toLocaleDateString('id-ID', {
     day: '2-digit',
 }).replace(/-/g, '/')
 
+
+
+
+interface SubtaskProps {
+    id: string,
+    task: string,
+    priority: 'Low' | 'Medium' | 'High',
+    description?: string,
+    status: 'On Progress' | 'Done',
+    createdAt: Date,
+}
+
 interface customClassType {
     customClass?: string
 }
 export default function CardGroupTask({ customClass }: customClassType) {
+    const [groupTaskData, setGroupsTaskData] = useState<any[]>([]);
+    const [refreshing, setRefreshing] = useState(false);
+    let active = true
+
+    const getDataFireStore = async () => {
+        const snapshot = await getDocs(collection(db, 'groupTasks'))
+
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        }))
+    }
+
+    const loadData = async () => {
+        const active = true;
+        try {
+            const local = await AsyncStorage.getItem("groupTasks");
+            if (local) {
+                const parsed = local ? JSON.parse(local) : [];
+                if (active) setGroupsTaskData(parsed);
+                return;
+            }
+
+            const checkDatabase = await getDataFireStore()
+
+            if (active) {
+                console.log('Data groupTasks tidak ditemukan. Sistem sedang mencari di database.')
+                setGroupsTaskData(checkDatabase)
+                await AsyncStorage.setItem('groupTasks', JSON.stringify(checkDatabase))
+            }
+
+        } catch (error) {
+            console.log('Load data eror: ', error)
+        }
+    }
+
+    useEffect(() => {
+        loadData();
+    }, []);
     return (
         <View className={`py-[25px] ${customClass}`}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <HStack className=''>
-                    {dummyAccounts.map((item, index) => {
-                        const bar = ((item.task_success / item.task_all) * 100)/100;
+                    {groupTaskData.map((item, index) => {
+                        const taskDone = item.task.filter((t: SubtaskProps) => t.status === 'Done').length
+                        const all_tasks = item.task.length;
+                        const bar = ((taskDone / all_tasks) * 100) / 100;
                         return (
-                            <Box key={index} className='ml-[30px] w-[334px] bg-white p-5 border-[2px] rounded-[8px] py-[18px] px-[24px]'>
-                                <VStack>
-                                    <Text style={{ fontFamily: "HankenGrotesk_900Black_Italic" }} className='text-[24px] mt-3'>{item.title}</Text>
-                                    <Text className='text-[14px] mt-[3px] text-[#4B4B4B]' style={{ fontFamily: "HankenGrotesk_400Regular" }}>{item.description}</Text>
-                                    {/* <Text className='text-[48px] my-[13px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>3/4 Task</Text> */}
-                                    <HStack className='justify-start items-center gap-2 my-[12px] mt-[8px]'>
-                                        <Progress.Bar progress={bar} width={200} animated color='black' height={8} />
-                                        <Text className='mb-1' style={{ fontFamily: "HankenGrotesk_900Black_Italic" }}>{(item.task_success / item.task_all) * 100} %</Text>
-                                    </HStack>
-                                    <HStack className='justify-between items-center mt-[12px]'>
-                                        <Text className='text-[14px] text-[#4B4B4B]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>Deadline: {DateNow}</Text>
-                                        <HStack className='justify-between items-center gap-3'>
-                                            <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>See Detail</Text>
-                                            <CircleArrowRight color={'#4b4b4b'}/>
+                            <TouchableOpacity
+                                key={index}
+                                onPress={() => router.push({
+                                    pathname: '/(screen)/GroupTask/[id]',
+                                    params: { id: item.id }
+                                })}
+                                activeOpacity={0.7}
+                            >
+                                <Box className='ml-[30px] bg-white p-5 border border-gray-400 rounded-[8px] py-[18px] px-[24px]'>
+                                    <VStack className='gap-2'>
+                                        <Text style={{ fontFamily: "HankenGrotesk_800ExtraBold" }} className='text-[24px]'>{item.name}</Text>
+                                        <Text className='text-[14px] mt-[3px] text-[#4B4B4B]' style={{ fontFamily: "HankenGrotesk_400Regular" }}>{item.description}</Text>
+                                        {/* <Text className='text-[48px] my-[13px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>3/4 Task</Text> */}
+                                        <HStack className='justify-start items-center gap-2 my-[12px] mt-[8px]'>
+                                            <Progress.Bar progress={bar} width={200} animated color='black' height={8} />
+                                            <Text className='mb-1' style={{ fontFamily: "HankenGrotesk_900Black_Italic" }}>{(taskDone / all_tasks) * 100} %</Text>
                                         </HStack>
-                                    </HStack>
-                                </VStack>
-                            </Box>
+                                        <HStack className='justify-between items-center mt-[12px]'>
+                                            <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>Deadline: {DateNow}</Text>
+                                        </HStack>
+                                    </VStack>
+                                </Box>
+                            </TouchableOpacity>
                         )
                     })}
                 </HStack>

@@ -1,5 +1,5 @@
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input';
-import { BookAlertIcon } from 'lucide-react-native';
+import { LucideIcon } from 'lucide-react-native';
 import React from 'react';
 import { Text, View } from 'react-native';
 type KeyboardTypeOptions =
@@ -30,10 +30,11 @@ interface FormInputPropsType {
     isPassword?: boolean,
     isRequired?: boolean,
     variant?: VariantType
+    icon:LucideIcon;
 }
 
 
-export default function FormInputs({ value, title, setOnChange, placeholder, typeInput, isPassword, variant, isRequired }: FormInputPropsType) {
+export default function FormInputs({ value, title, setOnChange, placeholder, typeInput, isPassword, variant, isRequired, icon }: FormInputPropsType) {
     return (
         <>
             <View>
@@ -44,7 +45,7 @@ export default function FormInputs({ value, title, setOnChange, placeholder, typ
                     variant={variant}   
                     isRequired ={isRequired}>
                     <InputSlot className="pl-5">
-                        <InputIcon as={BookAlertIcon} />
+                        <InputIcon as={icon} />
                     </InputSlot>
                     <InputField
                         type={isPassword ? 'password' : 'text'}

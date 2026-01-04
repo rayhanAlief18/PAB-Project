@@ -191,7 +191,7 @@ export default function CreateSubTask() {
                             className='ml-3 text-blue-700 flex-1'
                             style={{ fontFamily: "HankenGrotesk_500Medium" }}
                         >
-                            Creating subtask for Group Task #{id}
+                            {`Membuat subtask pada grup : ${subTask.name}`}
                         </Text>
                     </Box>
 

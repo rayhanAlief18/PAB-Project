@@ -3,7 +3,7 @@ import { TaskPriority } from '@/components/custom/Form/FormPriorityPicker';
 import HeaderPage from '@/components/custom/HeaderPage';
 import FormInputs from '@/components/custom/Input/FormInput';
 import { VStack } from '@/components/ui/vstack';
-import { AlertCircle, Calendar, Clock } from 'lucide-react-native';
+import { AlertCircle, BookAIcon, Calendar, Clock, TextInitial } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -177,6 +177,7 @@ export default function CreateGroupTask() {
                                     placeholder="Enter group name"
                                     setOnChange={setName}
                                     variant='rounded'
+                                    icon={BookAIcon}
                                 />
 
                                 {/* Error Message */}
@@ -200,6 +201,7 @@ export default function CreateGroupTask() {
                                     placeholder="Add description for this group"
                                     setOnChange={setDescription}
                                     variant='rounded'
+                                    icon={TextInitial}
                                 />
                             </View>
 
