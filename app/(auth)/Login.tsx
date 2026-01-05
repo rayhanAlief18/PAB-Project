@@ -1,8 +1,6 @@
 import { FormInput } from "@/components/custom/Form";
-import { Box } from "@/components/ui/box";
 import { Button } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
-import { Image } from "@/components/ui/image";
 import { VStack } from "@/components/ui/vstack";
 import { router, Stack } from "expo-router";
 import { CircleUserRound, LockKeyholeOpen } from "lucide-react-native";
@@ -121,22 +119,6 @@ export default function Login() {
                                     Don't have an account? <Text className="text-[#2B8D47]" style={{ fontFamily: "HankenGrotesk_500Medium" }}>Register</Text>
                                 </Text>
                             </Pressable>
-                        </HStack>
-
-                        <Text className="text-center text-[#4b4b4b] mt-4" style={{ fontFamily: "HankenGrotesk_400regular" }}>
-                            Or Login With
-                        </Text>
-
-                        <HStack className="justify-center">
-                            <Box className="bg-white rounded-md p-3 mx-2 shadow-xs">
-                                <Image
-                                    size="xs"
-                                    source={
-                                        require('../../src/assets/image/google.png')
-                                    }
-                                    alt="image"
-                                />
-                            </Box>
                         </HStack>
                     </VStack>
                 </View>
