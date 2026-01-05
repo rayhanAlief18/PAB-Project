@@ -11,17 +11,17 @@ interface MenuItem {
     icon: React.ComponentType<any>,
     onPress?: () => void,
 }
-interface customClassType{
-    customClass?:string,
+interface customClassType {
+    customClass?: string,
 }
 const menuItems: MenuItem[] = [
     { label: "Task", icon: BookAlertIcon, onPress: () => router.push('/tasks') },
     { label: "Group Task", icon: GroupIcon },
-    { label: "History Task", icon: BookMarked },
+    { label: "History Task", icon: BookMarked, onPress: () => router.push('/history-tasks') },
     { label: "???", icon: NotebookPen },
 ];
 
-export default function MenuToDoList({customClass}:customClassType) {
+export default function MenuToDoList({ customClass }: customClassType) {
     return (
         <View className={`${customClass}`}>
             <VStack>
@@ -34,11 +34,11 @@ export default function MenuToDoList({customClass}:customClassType) {
                             disabled={!item.onPress}
                         >
                             <VStack className='justify-center items-center gap-2'>
-                            <Box className='rounded-full bg-white border-2 border-black w-16 h-16 flex justify-center items-center'>
-                                <item.icon size={24} color='#4B4B4B' />
-                            </Box>
-                            <Text className='' style={{ fontFamily: "HankenGrotesk_400Regular_Italic" }}>{item.label}</Text>
-                        </VStack>
+                                <Box className='rounded-full bg-white border-2 border-black w-16 h-16 flex justify-center items-center'>
+                                    <item.icon size={24} color='#4B4B4B' />
+                                </Box>
+                                <Text className='' style={{ fontFamily: "HankenGrotesk_400Regular_Italic" }}>{item.label}</Text>
+                            </VStack>
                         </TouchableOpacity>
                     ))}
                 </HStack>

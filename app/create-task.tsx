@@ -1,14 +1,14 @@
 import { Header } from '@/components/custom';
-import FormDatePicker from '@/components/custom/Form/FormDatePicker';
 import FormInput from '@/components/custom/Form/FormInput';
 import FormPriorityPicker, { TaskPriority } from '@/components/custom/Form/FormPriorityPicker';
+import FormStatusPicker, { TaskStatus } from '@/components/custom/Form/FormStatusPicker';
 import FormTextArea from '@/components/custom/Form/FormTextArea';
 import FormTimePicker from '@/components/custom/Form/FormTimePicker';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { useTasks } from '@/contexts/TaskContext';
 import { router, useLocalSearchParams } from 'expo-router';
-import { ArrowLeft, Calendar, Clock } from 'lucide-react-native';
+import { ArrowLeft, Clock } from 'lucide-react-native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,7 +22,7 @@ export default function CreateTaskScreen() {
   const [description, setDescription] = useState('');
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [endTime, setEndTime] = useState<Date | null>(null);
-  const [deadline, setDeadline] = useState<Date | null>(null);
+  const [status, setStatus] = useState<TaskStatus>('On Progress');
   const [priority, setPriority] = useState<TaskPriority>('Medium');
 
   // Load task data if editing
@@ -34,14 +34,14 @@ export default function CreateTaskScreen() {
         setDescription(task.description);
         setStartTime(task.startTime);
         setEndTime(task.endTime);
-        setDeadline(task.deadline);
+        setStatus(task.status);
         setPriority(task.priority);
       }
     }
   }, [isEditMode, params.id, tasks]);
 
   const handleSave = () => {
-    if (!title || !description || !startTime || !endTime || !deadline) {
+    if (!title || !description || !startTime || !endTime) {
       // TODO: Show validation error
       return;
     }
@@ -51,10 +51,8 @@ export default function CreateTaskScreen() {
       description,
       startTime,
       endTime,
-      deadline,
-      status: (isEditMode ? tasks.find(t => t.id === params.id)?.status : 'On Progress') as 'On Progress' | 'Done',
+      status,
       priority,
-      progress: isEditMode ? (tasks.find(t => t.id === params.id)?.progress || 0) : 0,
     };
 
     // Console log untuk melihat data yang dibuat/diupdate
@@ -65,10 +63,8 @@ export default function CreateTaskScreen() {
       description: taskData.description,
       startTime: taskData.startTime?.toISOString() || null,
       endTime: taskData.endTime?.toISOString() || null,
-      deadline: taskData.deadline?.toISOString() || null,
       status: taskData.status,
       priority: taskData.priority,
-      progress: taskData.progress,
     });
     console.log('================');
 
@@ -143,21 +139,18 @@ export default function CreateTaskScreen() {
               />
             </HStack>
 
-            {/* Deadline Input - Menggunakan Date Picker */}
-            <FormDatePicker
-              label="Deadline"
-              icon={Calendar}
-              value={deadline}
-              onChange={setDeadline}
-              placeholder='Pilih tanggal deadline'
-              minimumDate={new Date()}
-            />
-
             {/* Priority Picker */}
             <FormPriorityPicker
               label="Tingkat Prioritas"
               value={priority}
               onChange={setPriority}
+            />
+
+            {/* Status Picker */}
+            <FormStatusPicker
+              label="Status"
+              value={status}
+              onChange={setStatus}
             />
           </VStack>
 

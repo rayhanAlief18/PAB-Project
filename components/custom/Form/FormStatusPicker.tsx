@@ -23,10 +23,32 @@ export default function FormStatusPicker({
 }: FormStatusPickerProps) {
   const statusOptions: TaskStatus[] = ['On Progress', 'Done'];
 
+  const getStatusColor = (status: TaskStatus): string => {
+    switch (status) {
+      case 'On Progress':
+        return 'bg-[#3B82F6] border-[#3B82F6]';
+      case 'Done':
+        return 'bg-[#10B981] border-[#10B981]';
+      default:
+        return 'bg-[#E5E5E5] border-[#E5E5E5]';
+    }
+  };
+
+  const getStatusLabel = (status: TaskStatus): string => {
+    switch (status) {
+      case 'On Progress':
+        return 'Progres';
+      case 'Done':
+        return 'Selesai';
+      default:
+        return status;
+    }
+  };
+
   return (
     <VStack className={`gap-2 ${containerClassName || ''}`}>
-      <Text 
-        className={`text-[14px] ${labelClassName || ''}`} 
+      <Text
+        className={`text-[14px] ${labelClassName || ''}`}
         style={{ fontFamily: "HankenGrotesk_500Medium" }}
       >
         {label}
@@ -39,20 +61,18 @@ export default function FormStatusPicker({
             activeOpacity={0.7}
             className='flex-1'
           >
-            <Box 
-              className={`border-2 rounded-[8px] py-3 px-4 ${
-                value === status 
-                  ? 'bg-black border-black' 
-                  : 'bg-white border-[#E5E5E5]'
-              }`}
+            <Box
+              className={`border-2 rounded-[8px] py-3 px-4 ${value === status
+                ? getStatusColor(status)
+                : 'bg-white border-[#E5E5E5]'
+                }`}
             >
               <Text
-                className={`text-center text-[14px] ${
-                  value === status ? 'text-white' : 'text-[#4B4B4B]'
-                }`}
-                style={{ fontFamily: "HankenGrotesk_500Medium" }}
+                className={`text-center text-[14px] ${value === status ? 'text-white' : 'text-[#4B4B4B]'
+                  }`}
+                style={{ fontFamily: "HankenGrotesk_700Bold" }}
               >
-                {status}
+                {getStatusLabel(status)}
               </Text>
             </Box>
           </TouchableOpacity>
@@ -61,4 +81,3 @@ export default function FormStatusPicker({
     </VStack>
   );
 }
-
