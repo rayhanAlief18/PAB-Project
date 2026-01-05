@@ -70,7 +70,7 @@ export default function MoneyPlacing() {
             <Box className="bg-white rounded-xl p-5 mb-4 mx-4 shadow-sm border border-gray-100">
                 <View className="flex-row justify-between items-start">
                     <View className="flex-1">
-                        
+                        {/* Header dengan jenis dan nama */}
                         <View className="flex-row items-center justify-between mb-3">
                             <View className="flex-row items-center space-x-2">
                                 <View className={`px-3 py-1.5 rounded-full ${item.type === 'bank' ? 'bg-blue-100' : 'bg-green-100'}`}>
@@ -85,7 +85,7 @@ export default function MoneyPlacing() {
                                 </View>
                             </View>
 
-                            
+                            {/* Button actions */}
                             <View className="flex-row space-x-2">
                                 <TouchableOpacity
                                     onPress={() => router.push(`/edit-money-placing/${item.id}`)}
@@ -113,7 +113,7 @@ export default function MoneyPlacing() {
                             </Text>
                         </View>
 
-                        
+                        {/* Info Cashflow */}
                         {cashflowData.transactionCount > 0 && (
                             <View className="bg-gray-50 rounded-lg p-3 mb-4">
                                 <Text className="text-sm font-medium text-gray-800 mb-2">Riwayat Perubahan</Text>
@@ -147,7 +147,7 @@ export default function MoneyPlacing() {
                             </View>
                         )}
 
-                        
+                        {/* Info Tanggal */}
                         <View className="border-t border-gray-200 pt-3">
                             <Text className="text-xs text-gray-500">
                                 📅 Dibuat: {formatShortDate(item.createdAt)}
@@ -159,7 +159,7 @@ export default function MoneyPlacing() {
                             )}
                         </View>
 
-                        
+                        {/* Quick Action Button untuk Cashflow */}
                         <TouchableOpacity
                             onPress={() => router.push('/create-cashflow')}
                             className="mt-4 bg-blue-500 py-2.5 rounded-lg active:bg-blue-600"
@@ -174,7 +174,7 @@ export default function MoneyPlacing() {
         );
     };
 
-    
+    // Fungsi untuk menghitung total semua Money Placement
     const calculateTotalBalance = () => {
         return placements.reduce((total, placement) => total + placement.nominal, 0);
     };
@@ -186,6 +186,7 @@ export default function MoneyPlacing() {
             <View className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl p-6 mb-6 shadow-2xl shadow-green-500/40">
                 <View className="flex-row items-center mb-3">
                     <View className="bg-white/20 p-2 rounded-full mr-3">
+                        <Text className="text-white"></Text>
                     </View>
                     <Text className="text-black/90 text-sm font-medium">Total Saldo Money Placement</Text>
                 </View>
@@ -214,6 +215,7 @@ export default function MoneyPlacing() {
             <View className="bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl p-6 mb-6 shadow-2xl border-2 border-emerald-700">
                 <View className="flex-row items-start">
                     <View className="bg-cyan-100 p-2 rounded-lg mr-3">
+                        <Text className="text-cyan-600 text-lg"></Text>
                     </View>
                     <View className="flex-1">
                         <Text className="text-cyan-800 font-bold text-sm mb-1">
@@ -237,6 +239,7 @@ export default function MoneyPlacing() {
                     </Text>
                 </View>
                 <View className="bg-gray-100 p-2 rounded-full">
+                    <Text className="text-gray-700 text-lg"></Text>
                 </View>
             </View>
         </View>
@@ -261,6 +264,7 @@ export default function MoneyPlacing() {
                     <View className="flex-1 justify-center items-center px-8">
                         <View className="bg-white p-8 rounded-2xl shadow-sm items-center">
                             <View className="w-24 h-24 bg-emerald-100 rounded-full justify-center items-center mb-6">
+                                <Text className="text-4xl"></Text>
                             </View>
                             <Text className="text-gray-800 text-xl font-bold text-center mb-3">
                                 Belum Ada Money Placement

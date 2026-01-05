@@ -52,22 +52,9 @@ export function TaskProvider({ children }: { children: ReactNode }) {
 
 export function useTasks() {
   const context = useContext(TaskContext);
-
-  if (!context) {
-    console.error(
-      'useTasks dipakai di luar TaskProvider'
-    );
-
-    return {
-      tasks: [],
-      addTask: () => {},
-      updateTask: () => {},
-      deleteTask: () => {},
-      toggleTaskStatus: () => {},
-    };
+  if (context === undefined) {
+    throw new Error('useTasks must be used within a TaskProvider');
   }
-
   return context;
 }
-
 

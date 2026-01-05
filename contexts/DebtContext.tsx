@@ -65,24 +65,11 @@ export function DebtProvider({ children }: { children: ReactNode }) {
 
 export function useDebts() {
   const context = useContext(DebtContext);
-
-  if (!context) {
-    console.error(
-      'useDebts dipakai di luar DebtProvider'
-    );
-
-    return {
-      debts: [],
-      addDebt: () => {},
-      updateDebt: () => {},
-      deleteDebt: () => {},
-      toggleDebtStatus: () => {},
-    };
+  if (context === undefined) {
+    throw new Error('useDebts must be used within a DebtProvider');
   }
-
   return context;
 }
-
 
 
 

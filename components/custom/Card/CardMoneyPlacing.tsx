@@ -20,9 +20,6 @@ export default function CardMoneyPlacing({ customClass }: CardMoneyPlacingProps)
   const { cashflows } = useCashflow();
   const router = useRouter();
 
-  // ===============================
-  // UTILITIES
-  // ===============================
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat('id-ID', {
       style: 'currency',
@@ -31,12 +28,10 @@ export default function CardMoneyPlacing({ customClass }: CardMoneyPlacingProps)
     }).format(amount);
 
   const calculateCashflowCount = (placementId: string) =>
-    cashflows?.filter(cf => cf.moneyPlacementId === placementId).length ?? 0;
+    cashflows.filter(cf => cf.moneyPlacementId === placementId).length;
 
-  const formatShortDate = (date?: Date | string) => {
-    if (!date) return '-';
-    return format(new Date(date), 'dd/MM/yyyy', { locale: id });
-  };
+  const formatShortDate = (date: Date | string) =>
+    format(new Date(date), 'dd/MM/yyyy', { locale: id });
 
   // ===============================
   // CARD CLICK → ROUTE VALID
@@ -49,11 +44,11 @@ export default function CardMoneyPlacing({ customClass }: CardMoneyPlacingProps)
   };
 
   // ===============================
-  // EMPTY STATE (SAFE)
+  // EMPTY STATE
   // ===============================
-  if (!placements || placements.length === 0) {
+  if (placements.length === 0) {
     return (
-      <View className={`px-[30px] py-[25px] ${customClass ?? ''}`}>
+      <View className={`px-[30px] py-[25px] ${customClass}`}>
         <Pressable
           onPress={() => router.push('/create-money-placing')}
           className="border-2 border-dashed border-[#2B8D47] rounded-[12px] py-[30px] items-center justify-center"
@@ -74,14 +69,16 @@ export default function CardMoneyPlacing({ customClass }: CardMoneyPlacingProps)
   // NORMAL STATE
   // ===============================
   return (
-    <View className={`py-[25px] ${customClass ?? ''}`}>
+    <View className={`py-[25px] ${customClass}`}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <HStack>
-          {placements.map((item: MoneyPlacement) => (
+          {placements.map((item: MoneyPlacement, index: number) => (
             <Pressable
-              key={item.id}
+              key={index}
               onPress={() => handlePressCard(item)}
-              style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.85 : 1,
+              })}
             >
               <Box className="ml-[30px] w-[334px] bg-white border-[2px] rounded-[8px] py-[18px] px-[24px]">
                 <VStack>

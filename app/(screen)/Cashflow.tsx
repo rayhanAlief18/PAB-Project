@@ -14,53 +14,49 @@ export default function CashflowScreen() {
   const router = useRouter();
   const { cashflows, loading, deleteCashflow, getCashflows } = useCashflow();
   const { placements } = useMoneyPlacing();
-
-  const [filter] = useState<'all' | 'tambah' | 'kurang'>('all');
+  const [filter, setFilter] = useState<'all' | 'tambah' | 'kurang'>('all');
   const [refreshing, setRefreshing] = useState(false);
 
-  /* ================= UTIL ================= */
-
-  const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat('id-ID', {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('id-ID', {
       style: 'currency',
       currency: 'IDR',
       minimumFractionDigits: 0,
     }).format(amount);
+  };
 
-  // 🔐 AMAN: handle string | Date
-  const formatDate = (date: string | Date) =>
-    format(new Date(date), 'dd MMM yyyy HH:mm', { locale: id });
+  const formatDate = (date: Date) => {
+    return format(date, 'dd MMM yyyy HH:mm', { locale: id });
+  };
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
-      Pendapatan: 'bg-green-100 text-green-800',
-      Gaji: 'bg-emerald-100 text-emerald-800',
-      Investasi: 'bg-teal-100 text-teal-800',
+      'Pendapatan': 'bg-green-100 text-green-800',
+      'Gaji': 'bg-emerald-100 text-emerald-800',
+      'Investasi': 'bg-teal-100 text-teal-800',
       'Makan/Minum': 'bg-amber-100 text-amber-800',
-      Bensin: 'bg-orange-100 text-orange-800',
-      Jajan: 'bg-yellow-100 text-yellow-800',
+      'Bensin': 'bg-orange-100 text-orange-800',
+      'Jajan': 'bg-yellow-100 text-yellow-800',
       'Online Shop': 'bg-pink-100 text-pink-800',
-      Transportasi: 'bg-blue-100 text-blue-800',
-      Hiburan: 'bg-purple-100 text-purple-800',
-      Kesehatan: 'bg-red-100 text-red-800',
-      Pendidikan: 'bg-indigo-100 text-indigo-800',
-      Tagihan: 'bg-gray-100 text-gray-800',
+      'Transportasi': 'bg-blue-100 text-blue-800',
+      'Hiburan': 'bg-purple-100 text-purple-800',
+      'Kesehatan': 'bg-red-100 text-red-800',
+      'Pendidikan': 'bg-indigo-100 text-indigo-800',
+      'Tagihan': 'bg-gray-100 text-gray-800',
       'Lain-lain': 'bg-gray-100 text-gray-800',
     };
     return colors[category] || 'bg-gray-100 text-gray-800';
   };
 
-  const getMoneyPlacementName = (placementId: string) => {
-    if (!placements.length) return '-';
-    const placement = placements.find(p => p.id === placementId);
-    return placement ? placement.name : '-';
+  const getMoneyPlacementName = (id: string) => {
+    const placement = placements.find(p => p.id === id);
+    return placement ? placement.name : 'Unknown';
   };
 
-  /* ================= DATA ================= */
-
-  const filteredCashflows = cashflows.filter(cf =>
-    filter === 'all' ? true : cf.condition === filter
-  );
+  const filteredCashflows = cashflows.filter(cashflow => {
+    if (filter === 'all') return true;
+    return cashflow.condition === filter;
+  });
 
   const totalTambah = cashflows
     .filter(c => c.condition === 'tambah')
@@ -78,8 +74,6 @@ export default function CashflowScreen() {
     setRefreshing(false);
   };
 
-  /* ================= RENDER ITEM ================= */
-
   const renderItem = ({ item }: { item: Cashflow }) => (
     <Box className="bg-white rounded-lg p-4 mb-3 mx-4 shadow-sm">
       <View className="flex-row justify-between items-start">
@@ -95,43 +89,36 @@ export default function CashflowScreen() {
                 <Text className="text-xs font-semibold">{item.category}</Text>
               </View>
             </View>
-
-            <Text
-              className={`text-lg font-bold ${
-                item.condition === 'tambah' ? 'text-emerald-600' : 'text-red-600'
-              }`}
-            >
-              {item.condition === 'tambah' ? '+' : '-'}
-              {formatCurrency(item.nominal)}
+            <Text className={`text-lg font-bold ${item.condition === 'tambah' ? 'text-emerald-600' : 'text-red-600'}`}>
+              {item.condition === 'tambah' ? '+' : '-'}{formatCurrency(item.nominal)}
             </Text>
           </View>
-
-          <Text className="text-sm font-medium text-gray-900 mb-1">
+          
+          <Text className="text-sm text-gray-900 font-medium mb-1">
             {getMoneyPlacementName(item.moneyPlacementId)}
           </Text>
-
+          
           {item.note && (
-            <Text className="text-sm text-gray-600 italic mb-2">{item.note}</Text>
+            <Text className="text-sm text-gray-600 mb-2 italic">{item.note}</Text>
           )}
-
+          
           <Text className="text-xs text-gray-500">
             {formatDate(item.createdAt)}
           </Text>
         </View>
-
+        
         <View className="flex-row space-x-2 ml-2">
           <TouchableOpacity
-            onPress={() =>
-              router.push({
-                pathname: '/edit-cashflow/[id]',
-                params: { id: item.id },
-              })
-            }
-            className="bg-blue-500 px-3 py-1 rounded"
-          >
-            <Text className="text-white text-xs">Edit</Text>
-          </TouchableOpacity>
-
+              onPress={() =>
+                router.push({
+                  pathname: '/edit-cashflow/[id]',
+                  params: { id: item.id },
+                })
+              }
+              className="bg-blue-500 px-3 py-1 rounded"
+            >
+              <Text className="text-white text-xs">Edit</Text>
+            </TouchableOpacity>
           <TouchableOpacity
             onPress={() => deleteCashflow(item.id)}
             className="bg-red-500 px-3 py-1 rounded-md"
@@ -143,37 +130,72 @@ export default function CashflowScreen() {
     </Box>
   );
 
-  /* ================= HEADER ================= */
-
   const renderHeader = () => (
     <View className="px-4 pb-4">
+      {/* Summary Cards */}
       <View className="flex-row justify-between mb-4">
         <View className="bg-white rounded-xl p-4 flex-1 mr-2 shadow-sm">
-          <Text className="text-sm text-gray-500">Total Pendapatan</Text>
+          <Text className="text-sm text-gray-500 mb-1">Total Pendapatan</Text>
           <Text className="text-2xl font-bold text-emerald-600">
             {formatCurrency(totalTambah)}
           </Text>
         </View>
         <View className="bg-white rounded-xl p-4 flex-1 ml-2 shadow-sm">
-          <Text className="text-sm text-gray-500">Total Pengeluaran</Text>
+          <Text className="text-sm text-gray-500 mb-1">Total Pengeluaran</Text>
           <Text className="text-2xl font-bold text-red-600">
             {formatCurrency(totalKurang)}
           </Text>
         </View>
       </View>
-
-      <View className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-5 mb-4">
-        <Text className="text-black text-sm">Saldo Bersih</Text>
+      
+      {/* Balance Card */}
+      <View className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-5 mb-4 shadow-sm">
+        <Text className="text-black text-sm mb-1">Saldo Bersih</Text>
         <Text className="text-3xl font-bold text-black">
           {formatCurrency(totalBalance)}
         </Text>
       </View>
-
-      <Text className="text-lg font-bold text-gray-900">Riwayat Transaksi</Text>
+      
+      {/* Filter Buttons */}
+      <View className="flex-row space-x-2 mb-4">
+        <TouchableOpacity
+          onPress={() => setFilter('all')}
+          className={`px-4 py-2 rounded-full ${filter === 'all' ? 'bg-blue-500' : 'bg-gray-200'}`}
+        >
+          <Text className={`font-medium ${filter === 'all' ? 'text-white' : 'text-gray-700'}`}>
+            Semua
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setFilter('tambah')}
+          className={`px-4 py-2 rounded-full ${filter === 'tambah' ? 'bg-emerald-500' : 'bg-gray-200'}`}
+        >
+          <View className="flex-row items-center">
+            <TrendingUp size={14} color={filter === 'tambah' ? 'white' : '#374151'} />
+            <Text className={`font-medium ml-1 ${filter === 'tambah' ? 'text-white' : 'text-gray-700'}`}>
+              Masuk
+            </Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => setFilter('kurang')}
+          className={`px-4 py-2 rounded-full ${filter === 'kurang' ? 'bg-red-500' : 'bg-gray-200'}`}
+        >
+          <View className="flex-row items-center">
+            <TrendingDown size={14} color={filter === 'kurang' ? 'white' : '#374151'} />
+            <Text className={`font-medium ml-1 ${filter === 'kurang' ? 'text-white' : 'text-gray-700'}`}>
+              Keluar
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      
+      {/* Title */}
+      <Text className="text-lg font-bold text-gray-900 mb-2">
+        Riwayat Transaksi
+      </Text>
     </View>
   );
-
-  /* ================= LOADING ================= */
 
   if (loading && cashflows.length === 0) {
     return (
@@ -183,24 +205,27 @@ export default function CashflowScreen() {
     );
   }
 
-  /* ================= MAIN ================= */
-
   return (
     <View className="flex-1 bg-[#F2F2F4]">
       <Stack.Screen options={{ headerShown: false }} />
       <SafeAreaView className="flex-1">
         <HeaderPage title="Cashflow" />
-
+        
         {cashflows.length === 0 ? (
           <View className="flex-1 justify-center items-center px-8">
-            <View className="bg-white p-8 rounded-2xl items-center">
-              <TrendingUp size={32} color="#3B82F6" />
-              <Text className="text-gray-700 text-lg mt-4">
+            <View className="bg-white p-8 rounded-2xl shadow-sm items-center">
+              <View className="w-20 h-20 bg-blue-100 rounded-full justify-center items-center mb-4">
+                <TrendingUp size={32} color="#3B82F6" />
+              </View>
+              <Text className="text-gray-700 text-lg text-center mb-2">
                 Belum ada transaksi cashflow
               </Text>
-              <Button
+              <Text className="text-gray-500 text-center mb-6">
+                Mulai catat pemasukan dan pengeluaran Anda
+              </Text>
+              <Button 
                 onPress={() => router.push('/create-cashflow')}
-                className="bg-blue-500 mt-6"
+                className="bg-blue-500"
               >
                 <ButtonText>Tambah Transaksi</ButtonText>
               </Button>
@@ -209,20 +234,20 @@ export default function CashflowScreen() {
         ) : (
           <FlatList
             data={filteredCashflows}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
             renderItem={renderItem}
+            contentContainerStyle={{ paddingTop: 16, paddingBottom: 80 }}
             ListHeaderComponent={renderHeader}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-            contentContainerStyle={{ paddingBottom: 80 }}
           />
         )}
 
         {cashflows.length > 0 && (
           <TouchableOpacity
             onPress={() => router.push('/create-cashflow')}
-            className="absolute bottom-6 right-6 bg-blue-500 w-14 h-14 rounded-full justify-center items-center"
+            className="absolute bottom-6 right-6 bg-blue-500 w-14 h-14 rounded-full justify-center items-center shadow-lg"
           >
             <Plus size={24} color="white" />
           </TouchableOpacity>
