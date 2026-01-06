@@ -23,8 +23,8 @@ export default function RecentlyCashflow({customClass}:customClassType) {
     return (
         <View className={`${customClass}`}>
             <HStack className='justify-between mt-[30px] items-center'>
-                <Text className='tracking-[-1.1px] text-[24px] ' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>Recently Cashflow </Text>
-                <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>{DateNow}</Text>
+                <Text className='tracking-[-1.1px] text-[22px] ' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>RECENTLY CASHFLOW </Text>
+                <Text className='text-[16px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>{DateNow}</Text>
             </HStack>
             <Divider className='h-[2px] rounded-full mt-[14px]' />
 

@@ -52,7 +52,7 @@ export default function CardMoneyPlacing({customClass}:customClassType) {
                         <Box key={index} className='ml-[30px] w-[334px] bg-white p-5 border-[2px] rounded-[8px] py-[18px] px-[24px]'>
                             <VStack>
                                 <HStack className='items-center gap-2 '>
-                                    <Wallet />
+                                    <Wallet color={'#000000'}/>
                                     <Text style={{ fontFamily: "HankenGrotesk_500Medium" }} className='text-[16px]'>{item.name}</Text>
                                 </HStack>
                                 <Text style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }} className='text-[36px] mt-3'>Rp {item.amount}</Text>
@@ -60,10 +60,10 @@ export default function CardMoneyPlacing({customClass}:customClassType) {
                             <Divider className='my-[8px] rounded-full bg-[#4B4B4B] h-[2px]' />
                             <HStack className='justify-between items-center my-[5px]'>
                                 <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>Created at 2025/12/18</Text>
-                                <Box className='border-2 py-[7px] px-[8px] rounded-[8px] bg-[#D9D9D9]'>
+                                <Box className=''>
                                     <HStack className='justify-between items-center gap-3'>
-                                        <Text className='text-[12px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>See Detail</Text>
-                                        <CircleArrowRight />
+                                        <Text className='text-[13px] text-[#2B8D47]' style={{ fontFamily: "HankenGrotesk_700Bold_Italic" }}>See Detail</Text>
+                                        <CircleArrowRight color={"#2B8D47"} size={20}/>
                                     </HStack>
                                 </Box>
                             </HStack>

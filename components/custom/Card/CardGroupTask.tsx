@@ -49,7 +49,6 @@ export default function CardGroupTask({ customClass }: customClassType) {
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <HStack className=''>
                     {dummyAccounts.map((item, index) => {
-                        const percentage = (item.task_success / item.task_all) * 100;
                         const bar = ((item.task_success / item.task_all) * 100)/100;
                         return (
                             <Box key={index} className='ml-[30px] w-[334px] bg-white p-5 border-[2px] rounded-[8px] py-[18px] px-[24px]'>
@@ -59,13 +58,13 @@ export default function CardGroupTask({ customClass }: customClassType) {
                                     {/* <Text className='text-[48px] my-[13px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>3/4 Task</Text> */}
                                     <HStack className='justify-start items-center gap-2 my-[12px] mt-[8px]'>
                                         <Progress.Bar progress={bar} width={200} animated color='black' height={8} />
-                                        <Text className='mb-1'>{(item.task_success / item.task_all) * 100} %</Text>
+                                        <Text className='mb-1' style={{ fontFamily: "HankenGrotesk_900Black_Italic" }}>{(item.task_success / item.task_all) * 100} %</Text>
                                     </HStack>
                                     <HStack className='justify-between items-center mt-[12px]'>
                                         <Text className='text-[14px] text-[#4B4B4B]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>Deadline: {DateNow}</Text>
                                         <HStack className='justify-between items-center gap-3'>
                                             <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}>See Detail</Text>
-                                            <CircleArrowRight />
+                                            <CircleArrowRight color={'#4b4b4b'}/>
                                         </HStack>
                                     </HStack>
                                 </VStack>
@@ -77,5 +76,3 @@ export default function CardGroupTask({ customClass }: customClassType) {
         </View>
     )
 }
-
-

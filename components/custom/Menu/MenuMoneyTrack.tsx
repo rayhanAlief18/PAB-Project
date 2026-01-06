@@ -9,38 +9,31 @@ import { Pressable, Text, View } from "react-native";
 interface MenuItem {
   label: string;
   icon: React.ComponentType<any>;
+  route: string;
 }
-interface customClassType {
+
+interface CustomClassType {
   customClass?: string;
 }
+
 const menuItems: MenuItem[] = [
-  { label: "Cashflow", icon: Banknote },
-  { label: "Money Placing", icon: Wallet },
-  { label: "Saving's", icon: HandCoins },
-  { label: "Debt", icon: NotebookPen },
+  { label: "CashFlow", icon: Banknote, route: "/(screen)/Cashflow" },
+  { label: "Money Placing", icon: Wallet, route: "/(screen)/MoneyPlacing" },
+  { label: "Saving's", icon: HandCoins, route: "/(screen)/Saving" },
+  { label: "Debt", icon: NotebookPen, route: "/(screen)/debt/Index" },
 ];
 
-export default function MenuMoneyTrack({ customClass }: customClassType) {
+export default function MenuMoneyTrack({ customClass }: CustomClassType) {
   return (
-    <View className={`${customClass}`}>
+    <View className={customClass}>
       <VStack>
-        <Text 
-          className="text-[24px]"
-          style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}
-        >
-          Menu
-        </Text>
         <HStack className="justify-between mt-3">
           {menuItems.map((item, index) => (
-            <Pressable
-              key={index}
-              onPress={() => router.push("/" + item.label)}
-            >
+            <Pressable key={index} onPress={() => router.push(item.route)}>
               <VStack className="justify-center items-center gap-2">
-                <Box className="rounded-full border-2 w-16 h-16 flex justify-center items-center">
-                  <item.icon size={24} />
+                <Box className="rounded-full border-2 w-16 h-16 flex bg-white justify-center items-center border-gray-700">
+                  <item.icon color="#4b4b4b" size={24} />
                 </Box>
-
                 <Text style={{ fontFamily: "HankenGrotesk_400Regular_Italic" }}>
                   {item.label}
                 </Text>
