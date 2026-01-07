@@ -7,6 +7,9 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Platform, Pressable, ScrollView, View } from "react-native";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
+import { db } from "../../../src/assets/config/firebase";
+
 
 type DebtType = {
     id: string;
@@ -55,37 +58,81 @@ export default function EditDebt() {
     };
 
     const doUpdate = async () => {
+    try {
+        // ===== VALIDATION =====
+        if (!name || !amount || !description) {
+            Alert.alert("Validation Error", "Semua field wajib diisi");
+            return;
+        }
+
+        // ===== GET LOCAL STORAGE =====
         const debtsStorageJson = await AsyncStorage.getItem("debts");
-        let debtsArray = [];
+        let debtsArray: DebtType[] = [];
 
         if (debtsStorageJson) {
             debtsArray = JSON.parse(debtsStorageJson);
         }
 
-        const debtObjUpdated = {
-            id: debt?.id,
+        // ===== OBJECT UPDATED =====
+        const debtObjUpdated: DebtType = {
+            id: debt?.id as string,
             name: name,
-            amount: parseInt(amount.replaceAll(".", "").replace("Rp ", "")),
+            amount: parseInt(amount.replace(/[^0-9]/g, "")),
             date_debt: dateDebt.getTime(),
             date_debt_payment_plan: dateDebtPaymentPlan.getTime(),
             description: description,
-            created_at: new Date().getTime(),
+            created_at: debt?.created_at as number, // tetap pakai created_at lama
         };
 
-        for (const debtObjUpdatedKey of Object.keys(debtObjUpdated)) {
-            // @ts-ignore
-            if (!debtObjUpdated[debtObjUpdatedKey]) {
-                Alert.alert("Err validation", `${debtObjUpdatedKey} cannot be empty`);
-                break;
-            }
+        // ===== UPDATE ASYNC STORAGE =====
+        const index = debtsArray.findIndex((item) => item.id === id);
+
+        if (index === -1) {
+            Alert.alert("Error", "Data tidak ditemukan");
+            return;
         }
 
-        debtsArray[debtsArray?.findIndex((debtFromDebts: DebtType) => debtFromDebts.id == id)] = debtObjUpdated;
+        debtsArray[index] = debtObjUpdated;
         await AsyncStorage.setItem("debts", JSON.stringify(debtsArray));
-        resetForms();
 
+        // ===== UPDATE FIREBASE =====
+        // Asumsi: documentId di Firebase = debt.id
+        // Kalau sebelumnya kamu pakai addDoc tanpa id custom, bilang → saya bantu mapping
+        const debtDocRef = collection(db, "debts");
+        const qSnapshot = await getDocs(debtDocRef);
+
+        let firebaseDocId: string | null = null;
+
+        qSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.created_at === debt?.created_at) {
+                firebaseDocId = doc.id;
+            }
+        });
+
+        if (!firebaseDocId) {
+            Alert.alert("Error", "Data tidak ditemukan di Firebase");
+            return;
+        }
+
+        await updateDoc(doc(db, "debts", firebaseDocId), {
+            name: debtObjUpdated.name,
+            amount: debtObjUpdated.amount,
+            date_debt: debtObjUpdated.date_debt,
+            date_debt_payment_plan: debtObjUpdated.date_debt_payment_plan,
+            description: debtObjUpdated.description,
+        });
+
+        Alert.alert("Success", "Data berhasil diupdate");
+        resetForms();
         router.push("/(screen)/debt/Index");
-    };
+
+    } catch (error) {
+        console.error("Update Error:", error);
+        Alert.alert("Error", "Gagal update data");
+    }
+};
+
 
     const formatRupiah = (value: string) => {
         const number = value.replace(/[^0-9]/g, "");

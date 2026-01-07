@@ -7,6 +7,10 @@ import { router, Stack } from "expo-router";
 import { PlusIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
+import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+
+import { db } from "../../../src/assets/config/firebase";
+
 
 type DebtType = {
     id: string;
@@ -41,16 +45,50 @@ export default function () {
     };
 
     const deleteDebt = async (debtObj: DebtType) => {
+    try {
+        // ===== CONFIRMATION (optional, tapi bagus) =====
+        // kalau mau simple, bisa dihapus
+        // Alert.alert("Konfirmasi", "Yakin mau hapus data ini?", [
+        //     { text: "Batal", style: "cancel" },
+        //     { text: "Hapus", style: "destructive", onPress: async () => { ... } }
+        // ]);
+
+        // ===== GET LOCAL STORAGE =====
         const debtsStorageJson = await AsyncStorage.getItem("debts");
-        let debtsArray = [];
+        let debtsArray: DebtType[] = [];
 
         if (debtsStorageJson) {
             debtsArray = JSON.parse(debtsStorageJson);
         }
 
-        await AsyncStorage.setItem("debts", JSON.stringify(debtsArray.filter((debtObjStorage: DebtType) => debtObjStorage.id != debtObj.id)));
+        // ===== DELETE FROM ASYNC STORAGE =====
+        const filteredDebts = debtsArray.filter((item) => item.id !== debtObj.id);
+        await AsyncStorage.setItem("debts", JSON.stringify(filteredDebts));
+
+        // ===== DELETE FROM FIREBASE =====
+        const qSnapshot = await getDocs(collection(db, "debts"));
+        let firebaseDocId: string | null = null;
+
+        qSnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            if (data.created_at === debtObj.created_at) {
+                firebaseDocId = docSnap.id;
+            }
+        });
+
+        if (firebaseDocId) {
+            await deleteDoc(doc(db, "debts", firebaseDocId));
+        } else {
+            console.warn("Data tidak ditemukan di Firebase");
+        }
+
         loadDebts();
-    };
+    } catch (error) {
+        console.error("Delete Error:", error);
+        Alert.alert("Error", "Gagal menghapus data");
+    }
+};
+
 
     /**
      * Deps

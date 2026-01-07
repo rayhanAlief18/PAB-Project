@@ -9,6 +9,9 @@ import { useState } from "react";
 import { Alert, Platform, Pressable, ScrollView, View } from "react-native";
 import "react-native-get-random-values";
 import { v4 as uuidv4 } from "uuid";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../../../src/assets/config/firebase";
+
 
 export default function CreateDebt() {
     /**
@@ -39,37 +42,55 @@ export default function CreateDebt() {
     };
 
     const doSubmit = async () => {
+    try {
+        // ===== VALIDATION =====
+        if (!name || !amount || !description) {
+            Alert.alert("Validation Error", "Semua field wajib diisi");
+            return;
+        }
+
+        // ===== GET LOCAL STORAGE =====
         const debtsStorageJson = await AsyncStorage.getItem("debts");
-        let debtsArray = [];
+        let debtsArray: any[] = [];
 
         if (debtsStorageJson) {
             debtsArray = JSON.parse(debtsStorageJson);
         }
 
+        // ===== OBJECT =====
         const debtObjSaved = {
-            id: uuidv4(),
+            id: Date.now().toString(),
             name: name,
-            amount: parseInt(amount.replaceAll(".", "").replace("Rp ", "")),
+            amount: parseInt(amount.replace(/[^0-9]/g, "")),
             date_debt: dateDebt.getTime(),
             date_debt_payment_plan: dateDebtPaymentPlan.getTime(),
             description: description,
             created_at: new Date().getTime(),
         };
 
-        for (const debtObjSavedKey of Object.keys(debtObjSaved)) {
-            // @ts-ignore
-            if (!debtObjSaved[debtObjSavedKey]) {
-                Alert.alert("Err validation", `${debtObjSavedKey} cannot be empty`);
-                break;
-            }
-        }
-
+        // ===== SAVE TO ASYNC STORAGE =====
         debtsArray.push(debtObjSaved);
         await AsyncStorage.setItem("debts", JSON.stringify(debtsArray));
-        resetForms();
 
+        // ===== SAVE TO FIREBASE =====
+        await addDoc(collection(db, "debts"), {
+            name: debtObjSaved.name,
+            amount: debtObjSaved.amount,
+            date_debt: debtObjSaved.date_debt,
+            date_debt_payment_plan: debtObjSaved.date_debt_payment_plan,
+            description: debtObjSaved.description,
+            created_at: debtObjSaved.created_at,
+        });
+
+        Alert.alert("Success", "Data debt berhasil disimpan");
+        resetForms();
         router.push("/(screen)/debt/Index");
-    };
+    } catch (error) {
+        console.error("Save Error:", error);
+        Alert.alert("Error", "Gagal menyimpan data");
+    }
+};
+
 
     const formatRupiah = (value: string) => {
         const number = value.replace(/[^0-9]/g, "");
