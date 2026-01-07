@@ -83,7 +83,7 @@ export default function EditDebt() {
         await AsyncStorage.setItem("debts", JSON.stringify(debtsArray));
         resetForms();
 
-        router.push("/(screen)/debt");
+        router.push("/(screen)/Debt");
     };
 
     const formatRupiah = (value: string) => {
