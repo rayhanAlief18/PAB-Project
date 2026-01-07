@@ -5,6 +5,7 @@ import TodayTask from '@/components/custom/Card/TodayTask';
 import MenuToDoList from '@/components/custom/Menu/MenuToDoList';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import TaskSummary from '@/components/custom/ToDo/TaskSummary';
 export default function TabTwoScreen() {
   return (
     <SafeAreaView className='flex-1 bg-[#F2F2F7] pb-[-20px]'>
@@ -12,7 +13,7 @@ export default function TabTwoScreen() {
       <ScrollView className=''>
         <MenuToDoList customClass={`px-[30px] mt-[12px]`} />
         <CardGroupTask />
-        <TodayTask customClass={`px-[30px]`} />
+        <TaskSummary customClass='px-[30px] mt-[20px]' />
       </ScrollView>
     </SafeAreaView>
   );
