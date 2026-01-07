@@ -289,19 +289,18 @@ export const useCashflow = () => {
   const context = useContext(CashflowContext);
 
   if (!context) {
-    // console.error(
-    //   'useCashflow dipakai di luar CashflowProvider'
-    // );
-  
-    // return {
-    //   cashflows: [],
-    //   addCashflow: async () => {},
-    //   updateCashflow: async () => {},
-    //   deleteCashflow: async () => {},
-    //   getCashflows: async () => {},
-    //   loading: false,
-    // };
-    throw new Error('useCashflow harus dipakai di dalam CashflowProvider');
+    console.error(
+      'useCashflow dipakai di luar CashflowProvider'
+    );
+
+    return {
+      cashflows: [],
+      addCashflow: async () => {},
+      updateCashflow: async () => {},
+      deleteCashflow: async () => {},
+      getCashflows: async () => {},
+      loading: false,
+    };
   }
 
   return context;

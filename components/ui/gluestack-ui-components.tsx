@@ -24,9 +24,29 @@ export const Button: React.FC<TouchableOpacityProps> = ({
   children,
   ...props
 }) => {
+  // If a developer passes plain text as a child like <Button>Save</Button>,
+  // React Native will throw "Text strings must be rendered within a <Text> component.".
+  // Ensure primitive children are wrapped with <Text> automatically.
+  const renderChild = (child: any, index?: number) => {
+    if (child === null || child === undefined) return null;
+    if (typeof child === 'string' || typeof child === 'number') {
+      return (
+        <Text key={index}>
+          {child}
+        </Text>
+      );
+    }
+    return child;
+  };
+
+  // Support array children too
+  const content = Array.isArray(children)
+    ? children.map((c, i) => renderChild(c, i))
+    : renderChild(children as any);
+
   return (
     <TouchableOpacity activeOpacity={0.8} {...props}>
-      {children}
+      {content}
     </TouchableOpacity>
   );
 };
