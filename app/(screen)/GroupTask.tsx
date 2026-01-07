@@ -9,8 +9,8 @@ import { Briefcase, CircleArrowRight, Clock, Plus, Trash2 } from 'lucide-react-n
 import React, { useEffect, useState } from 'react'
 import { Modal, RefreshControl, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 import * as Progress from 'react-native-progress'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { db } from "../../config/Firebase/index"; // pastikan ini bener
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 
 interface SubtaskProps {
