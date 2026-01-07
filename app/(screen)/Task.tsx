@@ -4,8 +4,8 @@ import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
 import { Task, useTasks } from '@/contexts/TaskContext';
 import { router } from 'expo-router';
-import { Calendar, Check, Clock, Edit, Plus, Trash2 } from 'lucide-react-native';
-import React, { useState } from 'react';
+import { ArrowLeft, Check, Clock, Edit, Plus, Trash2 } from 'lucide-react-native';
+import React, { useMemo, useState } from 'react';
 import { Modal, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -15,28 +15,41 @@ export const screenOptions = {
 
 
 export default function TasksScreen() {
+  // Ambil data tasks dan fungsi dari context (Hybrid Storage: AsyncStorage + Firestore)
   const { tasks, deleteTask, updateTask } = useTasks();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState<string | null>(null);
 
-  // Console log untuk melihat semua tasks (hanya di development)
+  // Cek apakah tanggal adalah hari ini
+  const isToday = (date: Date): boolean => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
+
+  // Filter tasks untuk hari ini saja
+  const todayTasks = useMemo(() => {
+    return tasks.filter(task => isToday(task.startTime));
+  }, [tasks]);
+
+  // Log untuk debugging (hanya di development)
   React.useEffect(() => {
-    if (__DEV__ && tasks.length > 0) {
-      // Group console logs untuk mengurangi output
-      const tasksData = tasks.map((task) => ({
+    if (__DEV__ && todayTasks.length > 0) {
+      const tasksData = todayTasks.map((task) => ({
         id: task.id,
         title: task.title,
         description: task.description,
         startTime: task.startTime?.toISOString() || null,
         endTime: task.endTime?.toISOString() || null,
-        deadline: task.deadline?.toISOString() || null,
         status: task.status,
         priority: task.priority,
-        progress: task.progress,
       }));
-      console.log('=== All Tasks ===', { total: tasks.length, tasks: tasksData });
+      console.log('Today Tasks:', { total: todayTasks.length, tasks: tasksData });
     }
-  }, [tasks]);
+  }, [todayTasks]);
 
   const handleDelete = (id: string) => {
     setTaskToDelete(id);
@@ -91,11 +104,16 @@ export default function TasksScreen() {
       <ScrollView className='flex-1'>
         <VStack className='px-[30px] py-[20px] gap-5 justify-center'>
 
+          {/* Title */}
+          <Text className='text-[24px] tracking-[-1.1px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>
+            Daftar Task Hari Ini
+          </Text>
+
           {/* Task List */}
-          {tasks.length === 0 ? (
+          {todayTasks.length === 0 ? (
             <VStack className='items-center justify-center py-20'>
               <Text className='text-[16px] text-[#9CA3AF]' style={{ fontFamily: "HankenGrotesk_400Regular" }}>
-                Belum ada task
+                Belum ada task hari ini
               </Text>
               <Text className='text-[14px] text-[#9CA3AF] mt-2' style={{ fontFamily: "HankenGrotesk_400Regular" }}>
                 Tekan tombol + untuk membuat task baru
@@ -103,7 +121,7 @@ export default function TasksScreen() {
             </VStack>
           ) : (
             <VStack className='gap-4 mb-8'>
-              {tasks.map((task) => (
+              {todayTasks.map((task) => (
                 <Box key={task.id} className='bg-white border-2 rounded-[8px] p-5 relative'>
                   <VStack className='gap-3'>
                     {/* Title and Actions */}
@@ -115,12 +133,11 @@ export default function TasksScreen() {
                           activeOpacity={0.7}
                           className='mt-1'
                         >
-                          <View 
-                            className={`w-6 h-6 border-2 rounded-[4px] items-center justify-center ${
-                              task.status === 'Done' 
-                                ? 'bg-black border-black' 
-                                : 'bg-white border-[#4B4B4B]'
-                            }`}
+                          <View
+                            className={`w-6 h-6 border-2 rounded-[4px] items-center justify-center ${task.status === 'Done'
+                              ? 'bg-black border-black'
+                              : 'bg-white border-[#4B4B4B]'
+                              }`}
                           >
                             {task.status === 'Done' && (
                               <Check size={18} color='white' />
@@ -128,16 +145,15 @@ export default function TasksScreen() {
                           </View>
                         </TouchableOpacity>
                         <VStack className='flex-1 gap-1'>
-                          <Text 
-                            className={`text-[20px] ${
-                              task.status === 'Done' ? 'line-through text-[#9CA3AF]' : ''
-                            }`}
+                          <Text
+                            className={`text-[20px] ${task.status === 'Done' ? 'line-through text-[#9CA3AF]' : ''
+                              }`}
                             style={{ fontFamily: "HankenGrotesk_900Black_Italic" }}
                           >
                             {task.title}
                           </Text>
-                          <Text 
-                            className='text-[14px] text-[#4B4B4B]' 
+                          <Text
+                            className='text-[14px] text-[#4B4B4B]'
                             style={{ fontFamily: "HankenGrotesk_400Regular" }}
                           >
                             {task.description}
@@ -165,37 +181,41 @@ export default function TasksScreen() {
                     {/* Time Info */}
                     <HStack className='items-center gap-3'>
                       <Clock size={16} color='#4B4B4B' />
-                      <Text 
-                        className='text-[14px]' 
+                      <Text
+                        className='text-[14px]'
                         style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}
                       >
                         {formatTime(task.startTime)} - {formatTime(task.endTime)}
                       </Text>
                     </HStack>
 
-                    {/* Deadline */}
-                    <HStack className='items-center gap-3'>
-                      <Calendar size={16} color='#4B4B4B' />
-                      <Text 
-                        className='text-[14px]' 
-                        style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}
-                      >
-                        Deadline: {formatDate(task.deadline)}
-                      </Text>
-                    </HStack>
-
-                    {/* Priority Badge */}
+                    {/* Status & Priority Badges */}
                     <HStack className='items-center gap-2 mt-1'>
-                      <View 
-                        className={`px-3 py-1 rounded-[4px] ${
-                          task.priority === 'High' 
-                            ? 'bg-[#EF4444]' 
-                            : task.priority === 'Medium'
+                      {/* Status Badge */}
+                      <View
+                        className={`px-3 py-1 rounded-[4px] ${task.status === 'Done'
+                          ? 'bg-[#10B981]'
+                          : 'bg-[#3B82F6]'
+                          }`}
+                      >
+                        <Text
+                          className='text-white text-[12px]'
+                          style={{ fontFamily: "HankenGrotesk_700Bold" }}
+                        >
+                          {task.status === 'Done' ? 'Selesai' : 'Progres'}
+                        </Text>
+                      </View>
+
+                      {/* Priority Badge */}
+                      <View
+                        className={`px-3 py-1 rounded-[4px] ${task.priority === 'High'
+                          ? 'bg-[#EF4444]'
+                          : task.priority === 'Medium'
                             ? 'bg-[#F59E0B]'
                             : 'bg-[#10B981]'
-                        }`}
+                          }`}
                       >
-                        <Text 
+                        <Text
                           className='text-white text-[12px]'
                           style={{ fontFamily: "HankenGrotesk_700Bold" }}
                         >
@@ -210,7 +230,7 @@ export default function TasksScreen() {
           )}
         </VStack>
       </ScrollView>
-      
+
       {/* Floating Action Button - Bottom Right */}
       <View className='absolute bottom-16 right-6'>
         <TouchableOpacity
@@ -244,13 +264,13 @@ export default function TasksScreen() {
                 <View className='bg-[#FEE2E2] rounded-full p-4'>
                   <Trash2 size={32} color='#EF4444' />
                 </View>
-                <Text 
+                <Text
                   className='text-[20px] text-center'
                   style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}
                 >
                   Hapus Task?
                 </Text>
-                <Text 
+                <Text
                   className='text-[14px] text-[#4B4B4B] text-center'
                   style={{ fontFamily: "HankenGrotesk_400Regular" }}
                 >
@@ -265,7 +285,7 @@ export default function TasksScreen() {
                   className='flex-1 border-2 border-[#E5E5E5] rounded-[8px] py-3'
                   activeOpacity={0.7}
                 >
-                  <Text 
+                  <Text
                     className='text-center text-[16px] text-[#4B4B4B]'
                     style={{ fontFamily: "HankenGrotesk_700Bold" }}
                   >
@@ -277,7 +297,7 @@ export default function TasksScreen() {
                   className='flex-1 bg-[#EF4444] rounded-[8px] py-3'
                   activeOpacity={0.8}
                 >
-                  <Text 
+                  <Text
                     className='text-center text-[16px] text-white'
                     style={{ fontFamily: "HankenGrotesk_700Bold" }}
                   >

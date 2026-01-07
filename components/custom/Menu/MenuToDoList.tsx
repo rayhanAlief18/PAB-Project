@@ -1,7 +1,7 @@
 import { Box } from '@/components/ui/box';
 import { HStack } from '@/components/ui/hstack';
 import { VStack } from '@/components/ui/vstack';
-import { router } from 'expo-router';
+import { Route, router } from 'expo-router';
 import { BookAlertIcon, BookMarked, GroupIcon, NotebookPen } from 'lucide-react-native';
 import React from 'react';
 import { Pressable, Text, View } from 'react-native';
@@ -9,7 +9,7 @@ import { Pressable, Text, View } from 'react-native';
 interface MenuItem {
     label: string,
     icon: React.ComponentType<any>,
-    route: string,
+    route: Route,
     onPress?: () => void,
 }
 interface customClassType {
@@ -19,7 +19,6 @@ const menuItems: MenuItem[] = [
     { label: "Tasks", icon: BookAlertIcon, route: "/(screen)/Task" },
     { label: "Group Task", icon: GroupIcon, route: "/(screen)/GroupTask" },
     { label: "History Task", icon: BookMarked, route: "/(screen)/HistoryTask" },
-    { label: "???", icon: NotebookPen, route: "/(screen)/???" },
 ];
 
 export default function MenuToDoList({ customClass }: customClassType) {

@@ -1,4 +1,3 @@
-import { Header } from '@/components/custom';
 import FormInput from '@/components/custom/Form/FormInput';
 import FormPriorityPicker, { TaskPriority } from '@/components/custom/Form/FormPriorityPicker';
 import FormStatusPicker, { TaskStatus } from '@/components/custom/Form/FormStatusPicker';
@@ -83,7 +82,6 @@ export default function CreateTaskScreen() {
 
   return (
     <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
-      <Header name='Azhim' customClass='px-[30px]' />
       <ScrollView className='flex-1'>
         <VStack className='px-[30px] py-[20px] gap-5'>
           {/* Back Button */}
