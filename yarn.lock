@@ -1034,10 +1034,10 @@
     resolve-from "^5.0.0"
     semver "^7.6.0"
 
-"@expo/html-elements@^0.10.1":
-  version "0.10.1"
-  resolved "https://registry.npmjs.org/@expo/html-elements/-/html-elements-0.10.1.tgz"
-  integrity sha512-3PTmtkV15D7+lykXVtvkH1jQ5Y6JE+e3zCaoMMux7z2cSLGQUNwDEUwG37gew3OEB1/E4/SEWgjvg8m7E6/e2Q==
+"@expo/html-elements@^0.12.5":
+  version "0.12.5"
+  resolved "https://registry.npmjs.org/@expo/html-elements/-/html-elements-0.12.5.tgz"
+  integrity sha512-28KWO88YKykKU7ke5sEQs5TivFRMs1Aktz13xxgqAf5rTgb+lka0VKVt3W2fG7ksbUQ407rtUqz7SEAq298NvQ==
 
 "@expo/image-utils@^0.8.8":
   version "0.8.8"
