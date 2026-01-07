@@ -33,7 +33,7 @@ export default function HeaderDashboard({ name, customClass }: HeaderProps) {
                 <HStack space="md" reversed={false} className='justify-between items-center'>
                     <HStack className='gap-4 items-center'>
                         <Avatar size="lg" className='border-2 border-[#4b4b4b]'>
-                            <AvatarFallbackText>Rayhan Alief F</AvatarFallbackText>
+                            <AvatarFallbackText>Refangga Lintar Prayoga</AvatarFallbackText>
                             <AvatarImage
                                 source={{
                                     uri: 'https://i.pinimg.com/736x/91/0a/b5/910ab59abc5aed1805485ddc299a6a11.jpg',

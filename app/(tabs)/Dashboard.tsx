@@ -8,7 +8,7 @@ export default function TabTwoScreen() {
   return (
 
     <SafeAreaView className='flex-1 bg-[#F2F2F7] '>
-      <HeaderDashboard name='Rayhan Alief Febryan' customClass={`px-[30px]`}/>
+      <HeaderDashboard name='Refangga Lintar Prayoga' customClass={`px-[30px]`}/>
       <ScrollView className='-mb-[30px]'>
         <CardMoneyPlacing />
         <MenuMoneyTrack customClass={`px-[30px]`}/>

@@ -1,14 +1,15 @@
+import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
+import { CashflowProvider } from '@/contexts/CashflowContext'; // Tambahkan ini
+import { DebtProvider } from '@/contexts/DebtContext';
+import { MoneyPlacingProvider } from '@/contexts/MoneyPlacingContext';
+import { TaskProvider } from '@/contexts/TaskContext';
+import '@/global.css';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from "react-native";
 import 'react-native-reanimated';
-
-import { GluestackUIProvider } from '@/components/ui/gluestack-ui-provider';
-import { DebtProvider } from '@/contexts/DebtContext';
-import { TaskProvider } from '@/contexts/TaskContext';
-import '@/global.css';
 
 //font
 import {
@@ -28,6 +29,7 @@ import {
 
 export const unstable_settings = {
   anchor: '(tabs)',
+  initialRouteName: '(tabs)',
 };
 
 export default function RootLayout() {
@@ -44,37 +46,45 @@ export default function RootLayout() {
     HankenGrotesk_800ExtraBold_Italic,
     HankenGrotesk_900Black_Italic,
     HankenGrotesk_900Black,
-  })
+  });
 
   if (!fontsLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#000" />
       </View>
-    )
+    );
   }
 
   return (
-
     <GluestackUIProvider mode="dark">
       <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <TaskProvider>
           <DebtProvider>
-            <Stack screenOptions={{
-                  headerShown: false,   
-                }}>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-              <Stack.Screen name="Task" options={{ headerShown: false, presentation: 'card' }} />
-              <Stack.Screen name="create-task" options={{ headerShown: false, presentation: 'card' }} />
-              <Stack.Screen name="debts" options={{ headerShown: false, presentation: 'card' }} />
-              <Stack.Screen name="create-debt" options={{ headerShown: false, presentation: 'card' }} />
-            </Stack>
-            <StatusBar style="auto" />
+            <MoneyPlacingProvider>
+              <CashflowProvider> {/* Tambahkan CashflowProvider di sini */}
+                <Stack screenOptions={{ headerShown: false }}>
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+                  <Stack.Screen name="Task" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="create-task" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="debts" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="create-debt" options={{ headerShown: false, presentation: 'card' }} />
+                  {/* Screen untuk Money Placing */}
+                  <Stack.Screen name="MoneyPlacing" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="create-money-placing" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="edit-money-placing/[id]" options={{ headerShown: false, presentation: 'card' }} />
+                  {/* Screen untuk Cashflow */}
+                  <Stack.Screen name="(screen)/Cashflow" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="create-cashflow" options={{ headerShown: false, presentation: 'card' }} />
+                  <Stack.Screen name="edit-cashflow/[id]" options={{ headerShown: false, presentation: 'card' }} />
+                </Stack>
+                <StatusBar style="auto" />
+              </CashflowProvider> {/* Tutup CashflowProvider */}
+            </MoneyPlacingProvider>
           </DebtProvider>
         </TaskProvider>
       </ThemeProvider>
     </GluestackUIProvider>
-
   );
 }
