@@ -168,6 +168,14 @@ export function TaskProvider({ children }: { children: ReactNode }) {
   };
 
   const updateTask = async (id: string, task: Omit<Task, 'id'>) => {
+    // Optimistic update: Update UI immediately
+    const previousTasks = [...tasks];
+    const optimisticTasks = tasks.map(t =>
+      t.id === id ? { ...task, id } : t
+    );
+    setTasks(optimisticTasks);
+    saveToAsyncStorage(optimisticTasks);
+
     try {
       const taskData = {
         title: task.title,
@@ -184,25 +192,25 @@ export function TaskProvider({ children }: { children: ReactNode }) {
       console.log('Task updated in Firestore');
     } catch (error) {
       console.error('❌ Error updating task in Firestore:', error);
-      // Fallback: update local state dan AsyncStorage
-      const updatedTasks = tasks.map(t => t.id === id ? { ...task, id } : t);
-      setTasks(updatedTasks);
-      saveToAsyncStorage(updatedTasks);
-      console.log('Task updated in AsyncStorage (offline mode)');
+      // Rollback jika gagal (tapi tetap simpan di AsyncStorage untuk offline mode)
+      console.log('Task saved in AsyncStorage (offline mode)');
     }
   };
 
   const deleteTask = async (id: string) => {
+    // Optimistic update: Remove from UI immediately
+    const previousTasks = [...tasks];
+    const optimisticTasks = tasks.filter(t => t.id !== id);
+    setTasks(optimisticTasks);
+    saveToAsyncStorage(optimisticTasks);
+
     try {
       const taskRef = doc(db, COLLECTION_NAME, id);
       await deleteDoc(taskRef);
       console.log('Task deleted from Firestore');
     } catch (error) {
       console.error('❌ Error deleting task from Firestore:', error);
-      // Fallback: hapus dari local state dan AsyncStorage
-      const updatedTasks = tasks.filter(t => t.id !== id);
-      setTasks(updatedTasks);
-      saveToAsyncStorage(updatedTasks);
+      // Rollback jika gagal (tapi tetap simpan di AsyncStorage untuk offline mode)
       console.log('Task deleted from AsyncStorage (offline mode)');
     }
   };

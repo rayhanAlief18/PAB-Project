@@ -31,6 +31,34 @@ export default function HistoryTasksScreen() {
             .sort((a, b) => b.startTime.getTime() - a.startTime.getTime());
     }, [tasks]);
 
+    // Log untuk debugging
+    React.useEffect(() => {
+        console.log('=== HISTORY TASKS DEBUG ===');
+        console.log('Total tasks:', tasks.length);
+        console.log('History tasks:', historyTasks.length);
+        
+        if (tasks.length > 0) {
+            console.log('All tasks with dates:');
+            tasks.forEach((task, index) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const taskDate = new Date(task.startTime);
+                taskDate.setHours(0, 0, 0, 0);
+                
+                console.log(`Task ${index + 1}:`, {
+                    title: task.title,
+                    startTime: task.startTime.toISOString(),
+                    taskDate: taskDate.toISOString(),
+                    today: today.toISOString(),
+                    isBeforeToday: taskDate < today,
+                    status: task.status
+                });
+            });
+        }
+        
+        console.log('=========================');
+    }, [tasks, historyTasks]);
+
     const handleDelete = (id: string) => {
         setTaskToDelete(id);
         setDeleteModalVisible(true);

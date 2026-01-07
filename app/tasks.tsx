@@ -25,9 +25,13 @@ export default function TasksScreen() {
     );
   };
 
-  // Filter tasks untuk hari ini saja
+  // Filter tasks untuk hari ini saja dan urutkan berdasarkan prioritas
   const todayTasks = useMemo(() => {
-    return tasks.filter(task => isToday(task.startTime));
+    const filtered = tasks.filter(task => isToday(task.startTime));
+
+    // Urutkan berdasarkan prioritas: High -> Medium -> Low
+    const priorityOrder = { 'High': 1, 'Medium': 2, 'Low': 3 };
+    return filtered.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
   }, [tasks]);
 
   // Log untuk debugging (hanya di development)

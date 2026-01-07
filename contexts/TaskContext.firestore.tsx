@@ -119,6 +119,13 @@ export function TaskProvider({ children }: { children: ReactNode }) {
     };
 
     const updateTask = async (id: string, task: Omit<Task, 'id'>) => {
+        // Optimistic update: Update UI immediately
+        const previousTasks = [...tasks];
+        const optimisticTasks = tasks.map(t =>
+            t.id === id ? { ...task, id } : t
+        );
+        setTasks(optimisticTasks);
+
         try {
             console.log('Updating task:', id);
 
@@ -139,11 +146,18 @@ export function TaskProvider({ children }: { children: ReactNode }) {
             console.log('Task updated successfully');
         } catch (error) {
             console.error('Error updating task:', error);
+            // Rollback ke state sebelumnya jika gagal
+            setTasks(previousTasks);
             throw error;
         }
     };
 
     const deleteTask = async (id: string) => {
+        // Optimistic update: Remove from UI immediately
+        const previousTasks = [...tasks];
+        const optimisticTasks = tasks.filter(t => t.id !== id);
+        setTasks(optimisticTasks);
+
         try {
             console.log('Deleting task:', id);
 
@@ -152,6 +166,8 @@ export function TaskProvider({ children }: { children: ReactNode }) {
             console.log('Task deleted successfully');
         } catch (error) {
             console.error('Error deleting task:', error);
+            // Rollback ke state sebelumnya jika gagal
+            setTasks(previousTasks);
             throw error;
         }
     };
