@@ -4,6 +4,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { TimerReset, BanknoteIcon, ListCheck } from 'lucide-react-native';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -19,22 +20,22 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: 'Money Track',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="chart.line.uptrend.xyaxis" color={color} />,
+            title: 'Cuaca & Waktu Sholat',
+            tabBarIcon: ({ color }) => <TimerReset size={28} color={color} />,
           }}
         />
         <Tabs.Screen
           name="Dashboard"
           options={{
-            title: 'Money Tracker',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+            title: 'Catatan Keuangan',
+            tabBarIcon: ({ color }) => <BanknoteIcon size={28} color={color} />,
           }}
         />
         <Tabs.Screen
           name="explore"
           options={{
             title: 'To Do List',
-            tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+            tabBarIcon: ({ color }) => <ListCheck size={28} color={color} />,
           }}
         />
       </Tabs>

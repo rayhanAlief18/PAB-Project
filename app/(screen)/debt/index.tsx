@@ -9,7 +9,7 @@ import { Edit, PlusIcon, Trash2 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, View } from "react-native";
 
-import { db } from "../../config/Firebase";
+import { db } from "../../../config/Firebase";
 
 
 type DebtType = {
@@ -120,7 +120,7 @@ export default function () {
                                     <TableHead className="text-xs text-gray-600 pr-2 pl-4">Nama</TableHead>
                                     <TableHead className="text-xs text-gray-600 px-2">Jumlah</TableHead>
                                     <TableHead className="text-xs text-gray-600 px-2">Tgl Hutang</TableHead>
-                                    <TableHead className="text-xs text-gray-600 px-2">Rencana Tgl Bayar</TableHead>
+                                    <TableHead className="text-xs text-gray-600 px-2">Dibuat</TableHead>
                                     <TableHead className="text-xs text-gray-600 px-2">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -137,7 +137,7 @@ export default function () {
                                             })}
                                         </TableData>
                                         <TableData className="text-xs text-gray-600 px-2">
-                                            {new Date(debtRow.date_debt_payment_plan).toLocaleDateString("id-ID", {
+                                            {new Date(debtRow.created_at).toLocaleDateString("id-ID", {
                                                 day: "2-digit",
                                                 month: "long",
                                                 year: "numeric",

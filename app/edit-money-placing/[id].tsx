@@ -88,7 +88,7 @@ export default function EditMoneyPlacing() {
   };
 
   return (
-    <View className="flex-1 bg-[#F2F2F4]">
+    <View className="flex-1 bg-[#F2F2F4] mt-12">
       <Stack.Screen options={{ headerShown: false }} />
 
       <HeaderPage title="Edit Money Placing" />
@@ -205,7 +205,12 @@ export default function EditMoneyPlacing() {
           <Button
             onPress={handleSave}
             disabled={loading}
-            className={`${loading ? 'bg-gray-400' : 'bg-emerald-500'}`}
+            className={`
+              px-5 py-2.5 rounded-full text-sm font-medium tracking-wide transition-colors
+              ${loading 
+                ? 'bg-gray-200 text-gray-500' 
+                : 'bg-green-500 text-white hover:bg-green-600'}
+            `}
           >
             <ButtonText className="text-white">
               {loading ? 'Menyimpan...' : 'Simpan Perubahan'}

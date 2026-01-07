@@ -5,8 +5,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { Alert, Platform, Pressable, ScrollView, Text, View } from "react-native";
-
+import { db } from "../../../config/Firebase";
 type DebtType = {
     id: string;
     name: string;
@@ -54,36 +55,79 @@ export default function EditDebt() {
     };
 
     const doUpdate = async () => {
-        const debtsStorageJson = await AsyncStorage.getItem("debts");
-        let debtsArray = [];
-
-        if (debtsStorageJson) {
-            debtsArray = JSON.parse(debtsStorageJson);
-        }
-
-        const debtObjUpdated = {
-            id: debt?.id,
-            name: name,
-            amount: parseInt(amount.replaceAll(".", "").replace("Rp ", "")),
-            date_debt: dateDebt.getTime(),
-            date_debt_payment_plan: dateDebtPaymentPlan.getTime(),
-            description: description,
-            created_at: new Date().getTime(),
-        };
-
-        for (const debtObjUpdatedKey of Object.keys(debtObjUpdated)) {
-            // @ts-ignore
-            if (!debtObjUpdated[debtObjUpdatedKey]) {
-                Alert.alert("Err validation", `${debtObjUpdatedKey} cannot be empty`);
-                break;
+        try {
+            // ===== VALIDATION =====
+            if (!name || !amount || !description) {
+                Alert.alert("Validation Error", "Semua field wajib diisi");
+                return;
             }
+    
+            // ===== GET LOCAL STORAGE =====
+            const debtsStorageJson = await AsyncStorage.getItem("debts");
+            let debtsArray: DebtType[] = [];
+    
+            if (debtsStorageJson) {
+                debtsArray = JSON.parse(debtsStorageJson);
+            }
+    
+            // ===== OBJECT UPDATED =====
+            const debtObjUpdated: DebtType = {
+                id: debt?.id as string,
+                name: name,
+                amount: parseInt(amount.replace(/[^0-9]/g, "")),
+                date_debt: dateDebt.getTime(),
+                date_debt_payment_plan: dateDebtPaymentPlan.getTime(),
+                description: description,
+                created_at: debt?.created_at as number, // tetap pakai created_at lama
+            };
+    
+            // ===== UPDATE ASYNC STORAGE =====
+            const index = debtsArray.findIndex((item) => item.id === id);
+    
+            if (index === -1) {
+                Alert.alert("Error", "Data tidak ditemukan");
+                return;
+            }
+    
+            debtsArray[index] = debtObjUpdated;
+            await AsyncStorage.setItem("debts", JSON.stringify(debtsArray));
+    
+            // ===== UPDATE FIREBASE =====
+            // Asumsi: documentId di Firebase = debt.id
+            // Kalau sebelumnya kamu pakai addDoc tanpa id custom, bilang → saya bantu mapping
+            const debtDocRef = collection(db, "debts");
+            const qSnapshot = await getDocs(debtDocRef);
+    
+            let firebaseDocId: string | null = null;
+    
+            qSnapshot.forEach((doc) => {
+                const data = doc.data();
+                if (data.created_at === debt?.created_at) {
+                    firebaseDocId = doc.id;
+                }
+            });
+    
+            if (!firebaseDocId) {
+                Alert.alert("Error", "Data tidak ditemukan di Firebase");
+                return;
+            }
+    
+            await updateDoc(doc(db, "debts", firebaseDocId), {
+                name: debtObjUpdated.name,
+                amount: debtObjUpdated.amount,
+                date_debt: debtObjUpdated.date_debt,
+                date_debt_payment_plan: debtObjUpdated.date_debt_payment_plan,
+                description: debtObjUpdated.description,
+            });
+    
+            Alert.alert("Success", "Data berhasil diupdate");
+            resetForms();
+            router.push("/(screen)/Debt");
+    
+        } catch (error) {
+            console.error("Update Error:", error);
+            Alert.alert("Error", "Gagal update data");
         }
-
-        debtsArray[debtsArray?.findIndex((debtFromDebts: DebtType) => debtFromDebts.id == id)] = debtObjUpdated;
-        await AsyncStorage.setItem("debts", JSON.stringify(debtsArray));
-        resetForms();
-
-        router.push("/(screen)/Debt");
     };
 
     const formatRupiah = (value: string) => {

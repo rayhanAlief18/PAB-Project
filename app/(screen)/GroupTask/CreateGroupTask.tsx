@@ -163,12 +163,12 @@ export default function CreateGroupTask() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 40 }}
             >
-                <View className="px-6 pt-6">
+                <View className="px-6 bg-[#F8F9FA] pt-6">
                     {/* Main Form Card */}
-                    <View className="rounded-2xl shadow-sm px-6 mt-6 ">
-                        <VStack className='gap-5'>
+                    <View className="bg-[#F8F9FA] px-4">
+                        <VStack className='gap-5 bg-[#F8F9FA]'>
                             {/* Group Name Input */}
-                            <View>
+                            <View className='bg-[#F8F9FA]'>
                                 <FormInputs
                                     typeInput='default'
                                     isPassword={false}

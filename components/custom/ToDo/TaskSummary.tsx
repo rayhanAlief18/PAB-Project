@@ -3,8 +3,10 @@ import { HStack } from '@/components/ui/hstack';
 import { useTasks } from '@/contexts/TaskContext';
 import { router } from 'expo-router';
 import { CircleArrowRight } from "lucide-react-native";
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { collection, getCountFromServer, query, where } from 'firebase/firestore';
+import { db } from '../../../config/Firebase'; // sesuaikan dengan config kamu
 interface customClassType {
     customClass?: string
 }
@@ -35,6 +37,23 @@ export default function TaskSummary({ customClass }: customClassType) {
     const completedTasks = useMemo(() => {
         return todayTasks.filter(task => task.status === 'Done');
     }, [todayTasks]);
+    const [totalGroupTasks, setTotalGroupTasks] = useState<number>(0);
+
+    useEffect(() => {
+        const fetchGroupTaskCount = async () => {
+            try {
+                const collRef = collection(db, "groupTasks");
+                const snapshot = await getCountFromServer(collRef);
+
+                setTotalGroupTasks(snapshot.data().count);
+            } catch (error) {
+                console.error("Gagal mengambil jumlah groupTasks:", error);
+                setTotalGroupTasks(0);
+            }
+        };
+
+        fetchGroupTaskCount();
+    }, []);
 
     return (
         <View className={`${customClass} mb-8`}>
@@ -74,15 +93,15 @@ export default function TaskSummary({ customClass }: customClassType) {
             </HStack>
             <Box className='border-2 py-[9px] px-[15px] rounded-[8px] mt-3 bg-white'>
                 <TouchableOpacity
-                onPress={() => router.push('/(screen)/GroupTask')}
-                activeOpacity={0.7}
+                    onPress={() => router.push('/(screen)/GroupTask')}
+                    activeOpacity={0.7}
                 >
                     <HStack className='justify-between items-center'>
-                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Goup Task</Text>
+                        <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium" }}>Group Task</Text>
                         <CircleArrowRight color={'#4b4b4b'} />
                     </HStack>
                     <HStack className='items-center mt-[3px]'>
-                        <Text className='text-[30px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>4</Text>
+                        <Text className='text-[30px]' style={{ fontFamily: "HankenGrotesk_800ExtraBold_Italic" }}>{totalGroupTasks}</Text>
                         <Text className='text-[14px]' style={{ fontFamily: "HankenGrotesk_500Medium_Italic" }}> Group Task Activity</Text>
                     </HStack>
                 </TouchableOpacity>

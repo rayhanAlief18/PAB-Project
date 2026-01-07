@@ -186,13 +186,13 @@ export default function SubTask() {
             <ScrollView
                 className='flex-1'
             >
-                <View className='px-6 mt-8'>
+                <View className='px-6 mt-8 bg-[#F8F9FA]'>
                     {/* Main Card */}
-                    <View className='rounded-2xl shadow-sm px-5'>
+                    <View className='rounded-2xl shadow-sm px-5 bg-[#F8F9FA]'>
                         {/* Form Fields */}
-                        <VStack className='gap-5'>
+                        <VStack className='gap-5 bg-[#F8F9FA]'>
                             {/* SubTask Name */}
-                            <View>
+                            <View  className='bg-[#F8F9FA]'>
                                 <FormInputs
                                     title='Nama Tugas'
                                     value={task}

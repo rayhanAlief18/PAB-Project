@@ -1,12 +1,12 @@
 import HeaderPage from '@/components/custom/HeaderPage';
-import { Stack, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { View, ScrollView, TouchableOpacity, TextInput, Text } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChevronDown, ChevronUp, TrendingUp, TrendingDown } from 'lucide-react-native';
-import { useCashflow, CATEGORIES } from '@/contexts/CashflowContext';
-import { useMoneyPlacing } from '@/contexts/MoneyPlacingContext';
 import { Box, Button, ButtonText } from '@/components/ui/gluestack-ui-components';
+import { CATEGORIES, useCashflow } from '@/contexts/CashflowContext';
+import { useMoneyPlacing } from '@/contexts/MoneyPlacingContext';
+import { Stack, useRouter } from 'expo-router';
+import { ChevronDown, ChevronUp, TrendingDown, TrendingUp } from 'lucide-react-native';
+import React, { useState } from 'react';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CreateCashflow() {
     const router = useRouter();
@@ -332,7 +332,12 @@ export default function CreateCashflow() {
                         <Button
                             onPress={handleSubmit}
                             disabled={loading}
-                            className={`${loading ? 'bg-gray-400' : 'bg-blue-500'}`}
+                            className={`
+                                px-5 py-2.5 rounded-full text-sm font-medium tracking-wide text-white transition-colors
+                                ${loading
+                                    ? 'bg-gray-200 text-gray-500'
+                                    : 'bg-blue-500 text-white hover:bg-blue-600'}
+                              `}
                         >
                             <ButtonText>
                                 {loading ? 'Menyimpan...' : 'Simpan Transaksi'}

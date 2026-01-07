@@ -98,7 +98,7 @@ export default function CardGroupTask({ customClass }: customClassType) {
         loadData();
     }, []);
     return (
-        <View className={`py-[25px] ${customClass}`}>
+        <View className={`pt-[25px] pb-[15px] ${customClass}`}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <HStack className=''>
                     {groupTaskData.map((item, index) => {

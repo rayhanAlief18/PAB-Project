@@ -116,7 +116,7 @@ export default function Register() {
                     </VStack>
 
                     {/* Form */}
-                    <VStack className="mt-[30px] gap-7">
+                    <VStack className="mt-[30px] gap-2">
                         <FormInput
                             icon={User}
                             label="Nama"
@@ -160,7 +160,7 @@ export default function Register() {
                         ) : null}
 
                         <Button
-                            className="bg-[#2B8D47] rounded-full mt-8 h-12"
+                            className="bg-[#2B8D47] rounded-full mt-8 h-12 mb-12"
                             onPress={handleRegister}
                         >
                             <Text

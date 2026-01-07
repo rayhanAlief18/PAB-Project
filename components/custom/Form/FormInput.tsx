@@ -28,7 +28,7 @@ export default function FormInput({
       >
         {label}
       </Text>
-      <Box className='bg-white border border-gray-300 rounded-full px-4 py-3'>
+      <Box className='bg-white border border-gray-300 rounded-full px-4 py-1'>
         {Icon ? (
           <HStack className='items-center gap-2'>
             <Icon size={18} color='#4B4B4B' />
