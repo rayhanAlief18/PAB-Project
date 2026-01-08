@@ -85,7 +85,7 @@ export default function CardMain({ customClass }: customClassType) {
                         <Text className="text-2xl" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
                             Cuaca lokasi Anda:
                         </Text>
-                        <Text className="text-md opacity-60" style={{ fontFamily: "HankenGrotesk_400Regular" }}>
+                        <Text className=" text-md opacity-60" style={{ fontFamily: "HankenGrotesk_400Regular" }}>
                             Weather Sikki version
                         </Text>
                     </VStack>
