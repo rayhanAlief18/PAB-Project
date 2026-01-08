@@ -4,8 +4,8 @@ import { Input, InputField } from "@/components/ui/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { Alert, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { db } from "../../../config/Firebase";
 type DebtType = {

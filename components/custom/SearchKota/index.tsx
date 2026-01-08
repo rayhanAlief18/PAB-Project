@@ -157,8 +157,19 @@ export default function index() {
     return (
         <>
             <View>
-                <HStack className='gap-2 items-end justify-center z-[2]'>
+                <HStack className='gap-2 items-end justify-center z-[2] mt-[20px]'>
                     <View className='w-[70%]'>
+                        <VStack className="gap-2">
+                            <Text className="text-2xl" style={{ fontFamily: "HankenGrotesk_500Medium" }}>
+                                Pilih Lokasi:
+                            </Text>
+                            <Text className="text-md opacity-60" style={{ fontFamily: "HankenGrotesk_400Regular" }}>
+                                Weather & Jadwal Sholat 
+                            </Text>
+                            <Text className="text-md opacity-60" style={{ fontFamily: "HankenGrotesk_400Regular" }}>
+                            Rayhan version
+                            </Text>
+                        </VStack>
                         <TouchableOpacity
                             onPress={() => { setIsView(true) }}
                         >
@@ -246,8 +257,8 @@ export default function index() {
                 )}
             </View>
 
-            {!showJamSholat == false &&(
-                <VStack className='h-full justify-end'>
+            {!showJamSholat == false && (
+                <VStack className='h-full mt-[50px]'>
                     <Text className='text-center align-center'>Data belum dimuat,</Text>
                     <Text className='text-center align-center'> silahkan cari terlebih dahulu...</Text>
                 </VStack>

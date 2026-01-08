@@ -35,8 +35,7 @@ export default function HomeScreen() {
     <SafeAreaView className='flex-1 bg-[#F2F2F7]'>
       <ScrollView>
         <HeaderDashboard name={name} customClass='px-[30px]' />
-        {/* <FiturSholat /> */}
-        {/* <CardMain customClass='px-[30px]'/> */}
+        <CardMain customClass='px-[30px]'/>
         <SearchKota />
       </ScrollView>
     </SafeAreaView>
